@@ -728,13 +728,13 @@ function updateCalculator() {
   outputs.agentAutonomousShare.textContent = agentTotalUnits ? formatPercent(agentAutonomousTotalUnits / agentTotalUnits) : "0%";
 
   if (inputs.agentMode.value === "both") {
-    outputs.agentBifurcationNote.textContent = "Bifurcation uses the autonomous share selected above; scripted share is the remainder.";
+    outputs.agentBifurcationNote.textContent = "This split drives the unit calculation: scripted voice uses 1 Unit = 1,600 Minutes, while autonomous voice uses 1 Unit = 250 LLM-powered Minutes. Digital also has separate scripted and autonomous session entitlements.";
   } else if (inputs.agentMode.value === "scripted") {
-    outputs.agentBifurcationNote.textContent = "Scripted-only mode — 100% of AI Agent quantity is allocated to scripted automation.";
+    outputs.agentBifurcationNote.textContent = "Scripted-only mode uses scripted entitlements only: voice is calculated at 1 Unit = 1,600 Minutes and digital at 1 Unit = 4,800 Sessions.";
   } else if (inputs.agentMode.value === "none") {
     outputs.agentBifurcationNote.textContent = "AI Agent is not in scope, so scripted and autonomous AI Agent quantities are both zero.";
   } else {
-    outputs.agentBifurcationNote.textContent = "Autonomous-only mode — 100% of AI Agent quantity is allocated to autonomous automation.";
+    outputs.agentBifurcationNote.textContent = "Autonomous-only mode uses autonomous entitlements only: voice is calculated at 1 Unit = 250 LLM-powered Minutes and digital at 1 Unit = 200 LLM-powered Sessions.";
   }
 
   outputs.voiceContainedCalls.textContent     = numberFormat.format(voiceContainedCalls);

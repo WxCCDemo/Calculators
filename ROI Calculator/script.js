@@ -1,6 +1,7 @@
 const STORAGE_KEY = "webexAiResourceEstimate";
 
 const defaults = {
+  marketBenchmark: "manual",
   totalAgents: 200,
   agentLoadedCost: 36000,
   turnoverRate: 35,
@@ -30,6 +31,19 @@ const defaults = {
   manualAgentUnits: 165,
   manualAssistantUnits: 94,
   manualQmUnits: 46
+};
+
+const marketBenchmarks = {
+  au: { label: "Australia", annualLoadedUsd: 53000 },
+  nz: { label: "New Zealand", annualLoadedUsd: 50000 },
+  sg: { label: "Singapore", annualLoadedUsd: 42000 },
+  hk: { label: "Hong Kong", annualLoadedUsd: 36000 },
+  in: { label: "India", annualLoadedUsd: 6500 },
+  my: { label: "Malaysia", annualLoadedUsd: 9000 },
+  th: { label: "Thailand", annualLoadedUsd: 14000 },
+  id: { label: "Indonesia", annualLoadedUsd: 4500 },
+  vn: { label: "Vietnam", annualLoadedUsd: 8500 },
+  kr: { label: "South Korea", annualLoadedUsd: 18000 }
 };
 
 const inputs = Object.fromEntries(
@@ -160,7 +174,16 @@ function setSyncedValue(id, value) {
 function syncControlPair(event) {
   const target = document.getElementById(event.currentTarget.dataset.syncTarget);
   if (target) target.value = event.currentTarget.value;
+  if (event.currentTarget.id === "agentLoadedCost" || event.currentTarget.id === "agentLoadedCostSlider") {
+    if (inputs.marketBenchmark) inputs.marketBenchmark.value = "manual";
+  }
   updateCalculator();
+}
+
+function applyMarketBenchmark() {
+  const benchmark = marketBenchmarks[inputs.marketBenchmark?.value];
+  if (!benchmark) return;
+  setSyncedValue("agentLoadedCost", benchmark.annualLoadedUsd);
 }
 
 function getSavedUnits() {
@@ -187,9 +210,12 @@ function getSavedMetering() {
 function getSavedAssumptions() {
   const assumptions = savedEstimate?.assumptions || {};
   const units = savedEstimate?.units || {};
+  const channels = savedEstimate?.profile?.channels || [];
+  const hasVoice = channels.includes("voice");
+  const hasDigital = channels.includes("digital");
   return {
-    voiceCompletion: Number(assumptions.voiceContainmentPercent || 0),
-    digitalCompletion: Number(assumptions.digitalDeflectionPercent || 0),
+    voiceCompletion: hasVoice ? Number(assumptions.voiceContainmentPercent || 0) : null,
+    digitalCompletion: hasDigital ? Number(assumptions.digitalDeflectionPercent || 0) : null,
     scriptedUnits: Number(units.agentScriptedTotalUnits || 0),
     autonomousUnits: Number(units.agentAutonomousTotalUnits || 0)
   };
@@ -209,8 +235,8 @@ function renderResourceHandoff() {
   outputs.resourceAssistantDigitalSessions.textContent = numberFormat.format(metering.assistantDigitalSessions);
   outputs.resourceQmVoiceSeconds.textContent = numberFormat.format(metering.qmVoiceSeconds);
   outputs.resourceQmDigitalSessions.textContent = numberFormat.format(metering.qmDigitalSessions);
-  outputs.carryVoiceCompletion.textContent = `${numberFormat.format(carry.voiceCompletion)}%`;
-  outputs.carryDigitalCompletion.textContent = `${numberFormat.format(carry.digitalCompletion)}%`;
+  outputs.carryVoiceCompletion.textContent = carry.voiceCompletion === null ? "Not in scope" : `${numberFormat.format(carry.voiceCompletion)}%`;
+  outputs.carryDigitalCompletion.textContent = carry.digitalCompletion === null ? "Not in scope" : `${numberFormat.format(carry.digitalCompletion)}%`;
   outputs.carryScriptedUnits.textContent = numberFormat.format(carry.scriptedUnits);
   outputs.carryAutonomousUnits.textContent = numberFormat.format(carry.autonomousUnits);
 
@@ -236,7 +262,8 @@ function derivedBenefitAssumptions(units, carry) {
   const hasAssistant = units.assistant > 0;
   const hasQm = units.qm > 0;
   const hasAgent = units.agent > 0;
-  const completion = Math.max(carry.voiceCompletion, carry.digitalCompletion) / 100;
+  const completionValues = [carry.voiceCompletion, carry.digitalCompletion].filter((value) => value !== null);
+  const completion = completionValues.length ? Math.max(...completionValues) / 100 : 0;
   return {
     ahtReduction: hasAssistant ? 0.10 : 0,
     acwReduction: hasAssistant ? 0.20 : 0,
@@ -274,7 +301,7 @@ function updateCalculator() {
   const savedAssumptions = getSavedAssumptions();
   const derived = derivedBenefitAssumptions(units, savedAssumptions);
   const realization = derived.realization;
-  const completionRate = savedEstimate && inputs.unitSource.value === "saved"
+  const completionRate = savedEstimate && inputs.unitSource.value === "saved" && savedAssumptions.voiceCompletion !== null
     ? savedAssumptions.voiceCompletion / 100
     : percent("selfServiceContainment");
   const proactiveAvoided = monthlyCallVolume * percent("proactiveDigitalDeflection");
@@ -310,7 +337,7 @@ function updateCalculator() {
   const fteReleased = hoursReleased / Math.max(1, positive("agentMonthlyHours"));
 
   outputs.roiPercent.textContent = `${numberFormat.format(roi)}%`;
-  outputs.paybackMonths.textContent = netMonthlyImpact > 0 ? `${numberFormat.format(paybackMonths)} mo` : "N/A";
+  outputs.paybackMonths.textContent = netMonthlyImpact > 0 ? `${numberFormat.format(paybackMonths)} mo` : "No payback";
   outputs.netMonthlyImpact.textContent = money(netMonthlyImpact);
   outputs.annualNetBenefit.textContent = money(annualNetBenefit);
   outputs.monthlyDeflectionSavings.textContent = money(deflectionSavings);
@@ -337,7 +364,7 @@ function updateCalculator() {
 
   outputs.summaryTitle.textContent = "ROI model summary";
   outputs.summaryText.textContent =
-    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, and fewer contacts reaching agents. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact.`;
+    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, and fewer contacts reaching agents. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact. Payback shows “No payback” when net monthly impact is negative.`;
   setList(outputs.valueLeverList, [
     `FCR improvement reduces repeat demand by about ${numberFormat.format(fcrContactsAvoided)} contacts per month.`,
     `AHT and ACW improvements release about ${numberFormat.format((ahtMinutesSaved + acwMinutesSaved) / 60)} agent hours per month.`,
@@ -362,6 +389,11 @@ document.querySelectorAll("[data-sync-target]").forEach((input) => {
 
 Object.values(inputs).forEach((input) => {
   if (input) input.addEventListener("input", updateCalculator);
+});
+
+inputs.marketBenchmark?.addEventListener("change", () => {
+  applyMarketBenchmark();
+  updateCalculator();
 });
 
 document.getElementById("printReportButton")?.addEventListener("click", printReport);

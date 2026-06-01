@@ -125,6 +125,23 @@
           </div>
           <div class="calc-group-body grid-3">
             <label>
+              <span>SEA market benchmark</span>
+              <select id="marketBenchmark">
+                <option value="manual">Manual / custom</option>
+                <option value="au">Australia</option>
+                <option value="nz">New Zealand</option>
+                <option value="sg">Singapore</option>
+                <option value="hk">Hong Kong</option>
+                <option value="in">India</option>
+                <option value="my">Malaysia</option>
+                <option value="th">Thailand</option>
+                <option value="id">Indonesia</option>
+                <option value="vn">Vietnam</option>
+                <option value="kr">South Korea</option>
+              </select>
+              <small>Sets a realistic annual loaded cost per agent in USD for ROI modelling.</small>
+            </label>
+            <label>
               <span>Number of human agents</span>
               <div class="dual-control">
                 <input id="totalAgentsSlider" type="range" min="1" max="10000" step="1" value="200" data-sync-target="totalAgents" />
@@ -133,12 +150,12 @@
               <small>Use productive FTEs supporting the selected queues.</small>
             </label>
             <label>
-              <span>Agent loaded cost</span>
+              <span>Annual loaded cost per agent</span>
               <div class="dual-control">
-                <input id="agentLoadedCostSlider" type="range" min="10000" max="250000" step="1000" value="36000" data-sync-target="agentLoadedCost" />
+                <input id="agentLoadedCostSlider" type="range" min="0" max="250000" step="500" value="36000" data-sync-target="agentLoadedCost" />
                 <div class="with-unit value-money"><span>$</span><input id="agentLoadedCost" type="number" min="0" step="1000" value="36000" data-sync-target="agentLoadedCostSlider" /></div>
               </div>
-              <small>Annual fully loaded cost per agent: salary, benefits, taxes, occupancy, tools, and management burden.</small>
+              <small>Annual fully loaded cost per agent in USD: salary, benefits, taxes, occupancy, tools, and management burden.</small>
             </label>
           </div>
         </div>
