@@ -58,28 +58,28 @@
             <p class="sub-group-label">Metered consumption from AI Resource Calculator</p>
             <div class="calc-group-body resource-grid metering-grid compact">
               <article>
-                <span>AI Agent voice minutes</span>
-                <strong id="resourceAgentVoiceMinutes">0</strong>
+                <span>AI Agent voice seconds</span>
+                <strong id="resourceAgentVoiceSeconds">0</strong>
               </article>
               <article>
                 <span>AI Agent digital sessions</span>
                 <strong id="resourceAgentDigitalSessions">0</strong>
               </article>
               <article>
-                <span>AI Agent outbound minutes</span>
-                <strong id="resourceAgentOutboundMinutes">0</strong>
+                <span>AI Agent outbound seconds</span>
+                <strong id="resourceAgentOutboundSeconds">0</strong>
               </article>
               <article>
-                <span>AI Assistant voice minutes</span>
-                <strong id="resourceAssistantVoiceMinutes">0</strong>
+                <span>AI Assistant voice seconds</span>
+                <strong id="resourceAssistantVoiceSeconds">0</strong>
               </article>
               <article>
                 <span>AI Assistant digital sessions</span>
                 <strong id="resourceAssistantDigitalSessions">0</strong>
               </article>
               <article>
-                <span>AI QM voice minutes</span>
-                <strong id="resourceQmVoiceMinutes">0</strong>
+                <span>AI QM voice seconds</span>
+                <strong id="resourceQmVoiceSeconds">0</strong>
               </article>
               <article>
                 <span>AI QM digital sessions</span>
@@ -90,6 +90,31 @@
           <div class="handoff-row">
             <p id="handoffStatus">No saved AI Resource estimate found. Enter unit values below or open Step 1 first.</p>
             <a href="../AI Resources Calculator/index.html">Open AI Resource Calculator</a>
+          </div>
+        </div>
+
+        <div class="calc-group">
+          <div class="calc-group-header">
+            <p class="eyebrow">Step 1 assumptions</p>
+            <h2>Resource Calculator Carryover</h2>
+          </div>
+          <div class="calc-group-body resource-grid metering-grid">
+            <article>
+              <span>Voice completed by AI Agent</span>
+              <strong id="carryVoiceCompletion">0%</strong>
+            </article>
+            <article>
+              <span>Digital completed by AI Agent</span>
+              <strong id="carryDigitalCompletion">0%</strong>
+            </article>
+            <article>
+              <span>Scripted AI Agent Unit(s)</span>
+              <strong id="carryScriptedUnits">0</strong>
+            </article>
+            <article>
+              <span>Autonomous AI Agent Unit(s)</span>
+              <strong id="carryAutonomousUnits">0</strong>
+            </article>
           </div>
         </div>
 
@@ -135,10 +160,10 @@
             <label>
               <span>Human agent AHT</span>
               <div class="dual-control">
-                <input id="talkTimeMinutesSlider" type="range" min="0" max="60" step="0.1" value="6" data-sync-target="talkTimeMinutes" />
-                <div class="with-unit value-small"><input id="talkTimeMinutes" type="number" min="0" step="0.1" value="6" data-sync-target="talkTimeMinutesSlider" /><span>min</span></div>
+                <input id="talkTimeMinutesSlider" type="range" min="0" max="3600" step="5" value="360" data-sync-target="talkTimeMinutes" />
+                <div class="with-unit value-small"><input id="talkTimeMinutes" type="number" min="0" step="5" value="360" data-sync-target="talkTimeMinutesSlider" /><span>sec</span></div>
               </div>
-              <small>Average human-agent handle time for calls that still need an agent.</small>
+              <small>Average human-agent handle time in seconds for calls that still need an agent.</small>
             </label>
           </div>
         </div>
@@ -146,40 +171,32 @@
         <div class="calc-group">
           <div class="calc-group-header">
             <p class="eyebrow">AI performance</p>
-            <h2>Deflection & Productivity Targets</h2>
+            <h2>Derived Business Benefit Assumptions</h2>
           </div>
-          <div class="calc-group-body grid-3">
-            <label>
-              <span>Self-service containment rate</span>
-              <div class="dual-control">
-                <input id="selfServiceContainmentSlider" type="range" min="0" max="100" step="1" value="30" data-sync-target="selfServiceContainment" />
-                <div class="with-unit value-percent"><input id="selfServiceContainment" type="number" min="0" max="100" step="1" value="30" data-sync-target="selfServiceContainmentSlider" /><span>%</span></div>
-              </div>
-              <small>Calls fully handled by AI Agent without human transfer.</small>
-            </label>
-            <label>
-              <span>Agent handle-time reduction</span>
-              <div class="dual-control">
-                <input id="ahtReductionSlider" type="range" min="0" max="60" step="1" value="5" data-sync-target="ahtReduction" />
-                <div class="with-unit value-percent"><input id="ahtReduction" type="number" min="0" max="60" step="1" value="5" data-sync-target="ahtReductionSlider" /><span>%</span></div>
-              </div>
-              <small>Expected reduction for remaining human-handled interactions with AI Assistant.</small>
-            </label>
-            <label>
+          <div class="calc-group-body resource-grid metering-grid">
+            <article>
+              <span>Estimated AHT reduction</span>
+              <strong id="derivedAhtReduction">0%</strong>
+            </article>
+            <article>
+              <span>Estimated ACW reduction</span>
+              <strong id="derivedAcwReduction">0%</strong>
+            </article>
+            <article>
+              <span>Estimated FCR improvement</span>
+              <strong id="derivedFcrImprovement">0%</strong>
+            </article>
+            <article>
               <span>Benefit realization factor</span>
-              <div class="dual-control">
-                <input id="realizationFactorSlider" type="range" min="0" max="100" step="5" value="75" data-sync-target="realizationFactor" />
-                <div class="with-unit value-percent"><input id="realizationFactor" type="number" min="0" max="100" step="5" value="75" data-sync-target="realizationFactorSlider" /><span>%</span></div>
-              </div>
-              <small>Conservative factor for adoption, queue mix, seasonality, and operational leakage.</small>
-            </label>
+              <strong id="derivedRealizationFactor">0%</strong>
+            </article>
           </div>
         </div>
 
         <div class="calc-group">
           <div class="calc-group-header">
             <p class="eyebrow">Commercial model</p>
-            <h2>Vendor Solution & Pricing Inputs</h2>
+            <h2>Webex Solution & Pricing Inputs</h2>
           </div>
           <div class="calc-group-body grid-3">
             <label>
@@ -302,8 +319,8 @@
             <div class="panel-heading"><p class="eyebrow">Savings</p><h2>Monthly Benefit</h2></div>
             <dl>
               <div><dt>Deflection and containment</dt><dd id="monthlyDeflectionSavings">$0</dd></div>
-              <div><dt>AI Assistant AHT reduction</dt><dd id="monthlyAhtSavings">$0</dd></div>
-              <div><dt>Other workforce impact</dt><dd id="monthlyWorkforceSavings">$0</dd></div>
+              <div><dt>AHT and ACW reduction</dt><dd id="monthlyAhtSavings">$0</dd></div>
+              <div><dt>FCR improvement</dt><dd id="monthlyFcrSavings">$0</dd></div>
               <div><dt>Total gross benefit</dt><dd id="grossMonthlyBenefit">$0</dd></div>
             </dl>
           </article>

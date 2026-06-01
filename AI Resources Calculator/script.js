@@ -799,11 +799,15 @@ function updateCalculator() {
     },
     metering: {
       agentVoiceMinutes: agentVoiceMin,
+      agentVoiceSeconds,
       agentDigitalSessions: agentDigSess,
       agentOutboundMinutes: agentObMin,
+      agentOutboundSeconds: agentObSeconds,
       assistantVoiceMinutes: assistantVoiceSeconds / 60,
+      assistantVoiceSeconds,
       assistantDigitalSessions: assistantDigSessions,
       qmVoiceMinutes: qmVoiceSeconds / 60,
+      qmVoiceSeconds,
       qmDigitalSessions: qmDigSessions
     },
     assumptions: {

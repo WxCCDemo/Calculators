@@ -8,7 +8,7 @@ const defaults = {
   rampMonths: 2,
   rampProductivity: 50,
   monthlyCallVolume: 320000,
-  talkTimeMinutes: 6,
+  talkTimeMinutes: 360,
   acwMinutes: 0,
   scriptedIntentPercent: 70,
   autonomousIntentPercent: 30,
@@ -16,6 +16,8 @@ const defaults = {
   proactiveDigitalDeflection: 0,
   selfServiceContainment: 30,
   ahtReduction: 5,
+  acwReduction: 10,
+  fcrImprovement: 5,
   turnoverReduction: 0,
   assistantCoverage: 100,
   realizationFactor: 75,
@@ -38,13 +40,21 @@ const outputs = {
   resourceAgentUnits: document.getElementById("resourceAgentUnits"),
   resourceAssistantUnits: document.getElementById("resourceAssistantUnits"),
   resourceQmUnits: document.getElementById("resourceQmUnits"),
-  resourceAgentVoiceMinutes: document.getElementById("resourceAgentVoiceMinutes"),
+  resourceAgentVoiceSeconds: document.getElementById("resourceAgentVoiceSeconds"),
   resourceAgentDigitalSessions: document.getElementById("resourceAgentDigitalSessions"),
-  resourceAgentOutboundMinutes: document.getElementById("resourceAgentOutboundMinutes"),
-  resourceAssistantVoiceMinutes: document.getElementById("resourceAssistantVoiceMinutes"),
+  resourceAgentOutboundSeconds: document.getElementById("resourceAgentOutboundSeconds"),
+  resourceAssistantVoiceSeconds: document.getElementById("resourceAssistantVoiceSeconds"),
   resourceAssistantDigitalSessions: document.getElementById("resourceAssistantDigitalSessions"),
-  resourceQmVoiceMinutes: document.getElementById("resourceQmVoiceMinutes"),
+  resourceQmVoiceSeconds: document.getElementById("resourceQmVoiceSeconds"),
   resourceQmDigitalSessions: document.getElementById("resourceQmDigitalSessions"),
+  carryVoiceCompletion: document.getElementById("carryVoiceCompletion"),
+  carryDigitalCompletion: document.getElementById("carryDigitalCompletion"),
+  carryScriptedUnits: document.getElementById("carryScriptedUnits"),
+  carryAutonomousUnits: document.getElementById("carryAutonomousUnits"),
+  derivedAhtReduction: document.getElementById("derivedAhtReduction"),
+  derivedAcwReduction: document.getElementById("derivedAcwReduction"),
+  derivedFcrImprovement: document.getElementById("derivedFcrImprovement"),
+  derivedRealizationFactor: document.getElementById("derivedRealizationFactor"),
   handoffStatus: document.getElementById("handoffStatus"),
   roiPercent: document.getElementById("roiPercent"),
   paybackMonths: document.getElementById("paybackMonths"),
@@ -52,6 +62,7 @@ const outputs = {
   annualNetBenefit: document.getElementById("annualNetBenefit"),
   monthlyDeflectionSavings: document.getElementById("monthlyDeflectionSavings"),
   monthlyAhtSavings: document.getElementById("monthlyAhtSavings"),
+  monthlyFcrSavings: document.getElementById("monthlyFcrSavings"),
   monthlyWorkforceSavings: document.getElementById("monthlyWorkforceSavings"),
   grossMonthlyBenefit: document.getElementById("grossMonthlyBenefit"),
   agentLicenseCost: document.getElementById("agentLicenseCost"),
@@ -95,10 +106,8 @@ const syncPairs = [
   ["agentMonthlyHours", "agentMonthlyHoursSlider"],
   ["proactiveDigitalDeflection", "proactiveDigitalDeflectionSlider"],
   ["selfServiceContainment", "selfServiceContainmentSlider"],
-  ["ahtReduction", "ahtReductionSlider"],
   ["turnoverReduction", "turnoverReductionSlider"],
   ["assistantCoverage", "assistantCoverageSlider"],
-  ["realizationFactor", "realizationFactorSlider"],
   ["agentUnitRate", "agentUnitRateSlider"],
   ["assistantUnitRate", "assistantUnitRateSlider"],
   ["qmUnitRate", "qmUnitRateSlider"],
@@ -165,13 +174,24 @@ function getSavedUnits() {
 function getSavedMetering() {
   const metering = savedEstimate?.metering || {};
   return {
-    agentVoiceMinutes: Number(metering.agentVoiceMinutes || 0),
+    agentVoiceSeconds: Number(metering.agentVoiceSeconds ?? (Number(metering.agentVoiceMinutes || 0) * 60)),
     agentDigitalSessions: Number(metering.agentDigitalSessions || 0),
-    agentOutboundMinutes: Number(metering.agentOutboundMinutes || 0),
-    assistantVoiceMinutes: Number(metering.assistantVoiceMinutes || 0),
+    agentOutboundSeconds: Number(metering.agentOutboundSeconds ?? (Number(metering.agentOutboundMinutes || 0) * 60)),
+    assistantVoiceSeconds: Number(metering.assistantVoiceSeconds ?? (Number(metering.assistantVoiceMinutes || 0) * 60)),
     assistantDigitalSessions: Number(metering.assistantDigitalSessions || 0),
-    qmVoiceMinutes: Number(metering.qmVoiceMinutes || 0),
+    qmVoiceSeconds: Number(metering.qmVoiceSeconds ?? (Number(metering.qmVoiceMinutes || 0) * 60)),
     qmDigitalSessions: Number(metering.qmDigitalSessions || 0)
+  };
+}
+
+function getSavedAssumptions() {
+  const assumptions = savedEstimate?.assumptions || {};
+  const units = savedEstimate?.units || {};
+  return {
+    voiceCompletion: Number(assumptions.voiceContainmentPercent || 0),
+    digitalCompletion: Number(assumptions.digitalDeflectionPercent || 0),
+    scriptedUnits: Number(units.agentScriptedTotalUnits || 0),
+    autonomousUnits: Number(units.agentAutonomousTotalUnits || 0)
   };
 }
 
@@ -181,13 +201,18 @@ function renderResourceHandoff() {
   outputs.resourceAgentUnits.textContent = numberFormat.format(units.agent);
   outputs.resourceAssistantUnits.textContent = numberFormat.format(units.assistant);
   outputs.resourceQmUnits.textContent = numberFormat.format(units.qm);
-  outputs.resourceAgentVoiceMinutes.textContent = numberFormat.format(metering.agentVoiceMinutes);
+  const carry = getSavedAssumptions();
+  outputs.resourceAgentVoiceSeconds.textContent = numberFormat.format(metering.agentVoiceSeconds);
   outputs.resourceAgentDigitalSessions.textContent = numberFormat.format(metering.agentDigitalSessions);
-  outputs.resourceAgentOutboundMinutes.textContent = numberFormat.format(metering.agentOutboundMinutes);
-  outputs.resourceAssistantVoiceMinutes.textContent = numberFormat.format(metering.assistantVoiceMinutes);
+  outputs.resourceAgentOutboundSeconds.textContent = numberFormat.format(metering.agentOutboundSeconds);
+  outputs.resourceAssistantVoiceSeconds.textContent = numberFormat.format(metering.assistantVoiceSeconds);
   outputs.resourceAssistantDigitalSessions.textContent = numberFormat.format(metering.assistantDigitalSessions);
-  outputs.resourceQmVoiceMinutes.textContent = numberFormat.format(metering.qmVoiceMinutes);
+  outputs.resourceQmVoiceSeconds.textContent = numberFormat.format(metering.qmVoiceSeconds);
   outputs.resourceQmDigitalSessions.textContent = numberFormat.format(metering.qmDigitalSessions);
+  outputs.carryVoiceCompletion.textContent = `${numberFormat.format(carry.voiceCompletion)}%`;
+  outputs.carryDigitalCompletion.textContent = `${numberFormat.format(carry.digitalCompletion)}%`;
+  outputs.carryScriptedUnits.textContent = numberFormat.format(carry.scriptedUnits);
+  outputs.carryAutonomousUnits.textContent = numberFormat.format(carry.autonomousUnits);
 
   if (savedEstimate) {
     const date = savedEstimate.generatedAt ? new Date(savedEstimate.generatedAt).toLocaleString() : "recently";
@@ -207,13 +232,30 @@ function selectedUnits() {
   };
 }
 
+function derivedBenefitAssumptions(units, carry) {
+  const hasAssistant = units.assistant > 0;
+  const hasQm = units.qm > 0;
+  const hasAgent = units.agent > 0;
+  const completion = Math.max(carry.voiceCompletion, carry.digitalCompletion) / 100;
+  return {
+    ahtReduction: hasAssistant ? 0.10 : 0,
+    acwReduction: hasAssistant ? 0.20 : 0,
+    fcrImprovement: hasQm ? 0.05 : hasAssistant ? 0.03 : 0,
+    realization: hasAgent || hasAssistant || hasQm ? Math.min(0.85, 0.60 + (completion * 0.25)) : 0
+  };
+}
+
 function applySavedEstimate() {
   if (!savedEstimate) return;
   const assumptions = savedEstimate.assumptions || {};
   const units = getSavedUnits();
   if (assumptions.humanAgentCount) setSyncedValue("totalAgents", assumptions.humanAgentCount);
   if (assumptions.monthlyVoiceCalls) setSyncedValue("monthlyCallVolume", assumptions.monthlyVoiceCalls);
-  if (assumptions.humanAhtMinutes) setSyncedValue("talkTimeMinutes", assumptions.humanAhtMinutes);
+  if (assumptions.humanAhtSeconds) {
+    setSyncedValue("talkTimeMinutes", assumptions.humanAhtSeconds);
+  } else if (assumptions.humanAhtMinutes) {
+    setSyncedValue("talkTimeMinutes", assumptions.humanAhtMinutes * 60);
+  }
   if (assumptions.voiceContainmentPercent !== undefined) setSyncedValue("selfServiceContainment", assumptions.voiceContainmentPercent);
   if (assumptions.assistantVoiceCoveragePercent !== undefined) setSyncedValue("assistantCoverage", assumptions.assistantVoiceCoveragePercent);
   inputs.manualAgentUnits.value = units.agent;
@@ -229,21 +271,31 @@ function updateCalculator() {
   const monthlyCallVolume = positive("monthlyCallVolume");
   const monthlyAgentCost = (totalAgents * positive("agentLoadedCost")) / 12;
   const costPerContact = monthlyCallVolume ? monthlyAgentCost / monthlyCallVolume : 0;
-  const realization = percent("realizationFactor");
+  const savedAssumptions = getSavedAssumptions();
+  const derived = derivedBenefitAssumptions(units, savedAssumptions);
+  const realization = derived.realization;
+  const completionRate = savedEstimate && inputs.unitSource.value === "saved"
+    ? savedAssumptions.voiceCompletion / 100
+    : percent("selfServiceContainment");
   const proactiveAvoided = monthlyCallVolume * percent("proactiveDigitalDeflection");
   const remainingAfterProactive = Math.max(0, monthlyCallVolume - proactiveAvoided);
-  const containedCalls = remainingAfterProactive * percent("selfServiceContainment");
+  const containedCalls = remainingAfterProactive * completionRate;
   const contactsAvoided = (proactiveAvoided + containedCalls) * realization;
   const deflectionSavings = contactsAvoided * costPerContact;
 
   const assistedContacts = Math.max(0, monthlyCallVolume - contactsAvoided) * percent("assistantCoverage");
-  const handleMinutes = positive("talkTimeMinutes") + positive("acwMinutes");
-  const ahtMinutesSaved = assistedContacts * handleMinutes * percent("ahtReduction") * realization;
-  const ahtSavings = (ahtMinutesSaved / 60) * (monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours")));
+  const humanAhtMinutes = positive("talkTimeMinutes") / 60;
+  const handleMinutes = humanAhtMinutes + positive("acwMinutes");
+  const acwMinutes = humanAhtMinutes * 0.2;
+  const ahtMinutesSaved = assistedContacts * humanAhtMinutes * derived.ahtReduction * realization;
+  const acwMinutesSaved = assistedContacts * acwMinutes * derived.acwReduction * realization;
+  const fcrContactsAvoided = monthlyCallVolume * derived.fcrImprovement * realization;
+  const fcrSavings = fcrContactsAvoided * costPerContact;
+  const ahtSavings = ((ahtMinutesSaved + acwMinutesSaved) / 60) * (monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours")));
 
   const workforceSavings = 0;
 
-  const grossMonthlyBenefit = deflectionSavings + ahtSavings + workforceSavings;
+  const grossMonthlyBenefit = deflectionSavings + ahtSavings + fcrSavings + workforceSavings;
   const agentLicenseCost = units.agent * positive("agentUnitRate");
   const assistantLicenseCost = units.assistant * positive("assistantUnitRate");
   const qmLicenseCost = units.qm * positive("qmUnitRate");
@@ -254,7 +306,7 @@ function updateCalculator() {
   const annualInvestment = (monthlyLicenseCost * 12) + positive("professionalServices");
   const roi = annualInvestment ? (annualNetBenefit / annualInvestment) * 100 : 0;
   const paybackMonths = netMonthlyImpact > 0 ? positive("professionalServices") / netMonthlyImpact : 0;
-  const hoursReleased = (contactsAvoided * handleMinutes + ahtMinutesSaved) / 60;
+  const hoursReleased = (contactsAvoided * handleMinutes + ahtMinutesSaved + acwMinutesSaved) / 60;
   const fteReleased = hoursReleased / Math.max(1, positive("agentMonthlyHours"));
 
   outputs.roiPercent.textContent = `${numberFormat.format(roi)}%`;
@@ -263,7 +315,8 @@ function updateCalculator() {
   outputs.annualNetBenefit.textContent = money(annualNetBenefit);
   outputs.monthlyDeflectionSavings.textContent = money(deflectionSavings);
   outputs.monthlyAhtSavings.textContent = money(ahtSavings);
-  outputs.monthlyWorkforceSavings.textContent = money(workforceSavings);
+  outputs.monthlyFcrSavings.textContent = money(fcrSavings);
+  if (outputs.monthlyWorkforceSavings) outputs.monthlyWorkforceSavings.textContent = money(workforceSavings);
   outputs.grossMonthlyBenefit.textContent = money(grossMonthlyBenefit);
   outputs.agentLicenseCost.textContent = money(agentLicenseCost);
   outputs.assistantLicenseCost.textContent = money(assistantLicenseCost);
@@ -277,14 +330,18 @@ function updateCalculator() {
   outputs.assistantUnitsUsed.textContent = numberFormat.format(units.assistant);
   outputs.qmUnitsUsed.textContent = numberFormat.format(units.qm);
   outputs.unitBasisNote.textContent = inputs.unitSource.value === "saved" && savedEstimate ? "Saved Step 1 values" : "Manual entry";
+  outputs.derivedAhtReduction.textContent = `${numberFormat.format(derived.ahtReduction * 100)}%`;
+  outputs.derivedAcwReduction.textContent = `${numberFormat.format(derived.acwReduction * 100)}%`;
+  outputs.derivedFcrImprovement.textContent = `${numberFormat.format(derived.fcrImprovement * 100)}%`;
+  outputs.derivedRealizationFactor.textContent = `${numberFormat.format(derived.realization * 100)}%`;
 
   outputs.summaryTitle.textContent = "ROI model summary";
   outputs.summaryText.textContent =
-    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). Product quantities remain separate. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact.`;
+    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, and fewer contacts reaching agents. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact.`;
   setList(outputs.valueLeverList, [
-    "AI Agent completion reduces contacts reaching human agents.",
-    "AI Assistant reduces handle time on remaining human interactions.",
-    "Fully loaded agent cost converts avoided work into business value."
+    `FCR improvement reduces repeat demand by about ${numberFormat.format(fcrContactsAvoided)} contacts per month.`,
+    `AHT and ACW improvements release about ${numberFormat.format((ahtMinutesSaved + acwMinutesSaved) / 60)} agent hours per month.`,
+    "AI Agent completion reduces contacts reaching human agents while preserving separate scripted and autonomous quantities."
   ]);
   setList(outputs.nextActionList, [
     "Validate the Step 1 unit quantities against the current scope.",
