@@ -40,7 +40,7 @@
             <p class="eyebrow">Step 1 handoff</p>
             <h2>AI Resource Calculator Details</h2>
           </div>
-          <div class="calc-group-body resource-grid">
+          <div class="calc-group-body resource-grid resource-units-grid">
             <article>
               <span>Webex AI Agent Unit(s)</span>
               <strong id="resourceAgentUnits">0</strong>
@@ -56,7 +56,7 @@
           </div>
           <div class="calc-sub-group">
             <p class="sub-group-label">Metered consumption from AI Resource Calculator</p>
-            <div class="calc-group-body resource-grid compact">
+            <div class="calc-group-body resource-grid metering-grid compact">
               <article>
                 <span>AI Agent voice minutes</span>
                 <strong id="resourceAgentVoiceMinutes">0</strong>
@@ -113,39 +113,7 @@
                 <input id="agentLoadedCostSlider" type="range" min="10000" max="250000" step="1000" value="36000" data-sync-target="agentLoadedCost" />
                 <div class="with-unit value-money"><span>$</span><input id="agentLoadedCost" type="number" min="0" step="1000" value="36000" data-sync-target="agentLoadedCostSlider" /></div>
               </div>
-              <small>Annual fully loaded salary, benefits, taxes, and occupancy.</small>
-            </label>
-            <label>
-              <span>Annual agent turnover rate</span>
-              <div class="dual-control">
-                <input id="turnoverRateSlider" type="range" min="0" max="100" step="1" value="35" data-sync-target="turnoverRate" />
-                <div class="with-unit value-percent"><input id="turnoverRate" type="number" min="0" max="100" step="1" value="35" data-sync-target="turnoverRateSlider" /><span>%</span></div>
-              </div>
-              <small>Annual attrition across the in-scope contact center workforce.</small>
-            </label>
-            <label>
-              <span>Cost to hire and train</span>
-              <div class="dual-control">
-                <input id="hireTrainCostSlider" type="range" min="0" max="100000" step="500" value="9200" data-sync-target="hireTrainCost" />
-                <div class="with-unit value-money"><span>$</span><input id="hireTrainCost" type="number" min="0" step="500" value="9200" data-sync-target="hireTrainCostSlider" /></div>
-              </div>
-              <small>Recruiting, training resources, supervision, and lost productivity.</small>
-            </label>
-            <label>
-              <span>Proficiency ramp time</span>
-              <div class="dual-control">
-                <input id="rampMonthsSlider" type="range" min="0" max="12" step="0.5" value="2" data-sync-target="rampMonths" />
-                <div class="with-unit value-small"><input id="rampMonths" type="number" min="0" max="12" step="0.5" value="2" data-sync-target="rampMonthsSlider" /><span>mo</span></div>
-              </div>
-              <small>Months until new hires reach full productivity.</small>
-            </label>
-            <label>
-              <span>Productivity during ramp</span>
-              <div class="dual-control">
-                <input id="rampProductivitySlider" type="range" min="0" max="100" step="5" value="50" data-sync-target="rampProductivity" />
-                <div class="with-unit value-percent"><input id="rampProductivity" type="number" min="0" max="100" step="5" value="50" data-sync-target="rampProductivitySlider" /><span>%</span></div>
-              </div>
-              <small>Typical productivity before full proficiency.</small>
+              <small>Annual fully loaded cost per agent: salary, benefits, taxes, occupancy, tools, and management burden.</small>
             </label>
           </div>
         </div>
@@ -165,44 +133,12 @@
               <small>Inbound sessions before automation or deflection.</small>
             </label>
             <label>
-              <span>Average talk time</span>
+              <span>Human agent AHT</span>
               <div class="dual-control">
                 <input id="talkTimeMinutesSlider" type="range" min="0" max="60" step="0.1" value="6" data-sync-target="talkTimeMinutes" />
                 <div class="with-unit value-small"><input id="talkTimeMinutes" type="number" min="0" step="0.1" value="6" data-sync-target="talkTimeMinutesSlider" /><span>min</span></div>
               </div>
-              <small>Human-agent conversation time before AI Assistant impact.</small>
-            </label>
-            <label>
-              <span>Average ACW / queue time</span>
-              <div class="dual-control">
-                <input id="acwMinutesSlider" type="range" min="0" max="30" step="0.1" value="2" data-sync-target="acwMinutes" />
-                <div class="with-unit value-small"><input id="acwMinutes" type="number" min="0" step="0.1" value="2" data-sync-target="acwMinutesSlider" /><span>min</span></div>
-              </div>
-              <small>After-call work, documentation, and queue/ASA friction modeled as capacity impact.</small>
-            </label>
-            <label>
-              <span>Scripted/simple intent split</span>
-              <div class="dual-control">
-                <input id="scriptedIntentPercentSlider" type="range" min="0" max="100" step="1" value="70" data-sync-target="scriptedIntentPercent" />
-                <div class="with-unit value-percent"><input id="scriptedIntentPercent" type="number" min="0" max="100" step="1" value="70" data-sync-target="scriptedIntentPercentSlider" /><span>%</span></div>
-              </div>
-              <small>High-volume, low-complexity traffic that fits scripted automation.</small>
-            </label>
-            <label>
-              <span>Autonomous/complex intent split</span>
-              <div class="dual-control">
-                <input id="autonomousIntentPercentSlider" type="range" min="0" max="100" step="1" value="30" data-sync-target="autonomousIntentPercent" />
-                <div class="with-unit value-percent"><input id="autonomousIntentPercent" type="number" min="0" max="100" step="1" value="30" data-sync-target="autonomousIntentPercentSlider" /><span>%</span></div>
-              </div>
-              <small>Lower-volume or more flexible traffic suited to autonomous support or assisted escalation.</small>
-            </label>
-            <label>
-              <span>Working hours per agent / month</span>
-              <div class="dual-control">
-                <input id="agentMonthlyHoursSlider" type="range" min="80" max="220" step="1" value="160" data-sync-target="agentMonthlyHours" />
-                <div class="with-unit value-small"><input id="agentMonthlyHours" type="number" min="1" step="1" value="160" data-sync-target="agentMonthlyHoursSlider" /><span>hrs</span></div>
-              </div>
-              <small>Used to convert avoided handle time into equivalent FTE capacity.</small>
+              <small>Average human-agent handle time for calls that still need an agent.</small>
             </label>
           </div>
         </div>
@@ -213,14 +149,6 @@
             <h2>Deflection & Productivity Targets</h2>
           </div>
           <div class="calc-group-body grid-3">
-            <label>
-              <span>Proactive digital deflection rate</span>
-              <div class="dual-control">
-                <input id="proactiveDigitalDeflectionSlider" type="range" min="0" max="100" step="1" value="20" data-sync-target="proactiveDigitalDeflection" />
-                <div class="with-unit value-percent"><input id="proactiveDigitalDeflection" type="number" min="0" max="100" step="1" value="20" data-sync-target="proactiveDigitalDeflectionSlider" /><span>%</span></div>
-              </div>
-              <small>Human interactions avoided through proactive digital messaging.</small>
-            </label>
             <label>
               <span>Self-service containment rate</span>
               <div class="dual-control">
@@ -236,22 +164,6 @@
                 <div class="with-unit value-percent"><input id="ahtReduction" type="number" min="0" max="60" step="1" value="5" data-sync-target="ahtReductionSlider" /><span>%</span></div>
               </div>
               <small>Expected reduction for remaining human-handled interactions with AI Assistant.</small>
-            </label>
-            <label>
-              <span>Turnover reduction target</span>
-              <div class="dual-control">
-                <input id="turnoverReductionSlider" type="range" min="0" max="50" step="1" value="8" data-sync-target="turnoverReduction" />
-                <div class="with-unit value-percent"><input id="turnoverReduction" type="number" min="0" max="50" step="1" value="8" data-sync-target="turnoverReductionSlider" /><span>%</span></div>
-              </div>
-              <small>Expected relative reduction in attrition from better agent experience.</small>
-            </label>
-            <label>
-              <span>AI Assistant coverage</span>
-              <div class="dual-control">
-                <input id="assistantCoverageSlider" type="range" min="0" max="100" step="1" value="90" data-sync-target="assistantCoverage" />
-                <div class="with-unit value-percent"><input id="assistantCoverage" type="number" min="0" max="100" step="1" value="90" data-sync-target="assistantCoverageSlider" /><span>%</span></div>
-              </div>
-              <small>Percentage of remaining human-handled interactions supported by AI Assistant.</small>
             </label>
             <label>
               <span>Benefit realization factor</span>
@@ -391,7 +303,7 @@
             <dl>
               <div><dt>Deflection and containment</dt><dd id="monthlyDeflectionSavings">$0</dd></div>
               <div><dt>AI Assistant AHT reduction</dt><dd id="monthlyAhtSavings">$0</dd></div>
-              <div><dt>Turnover and ramp impact</dt><dd id="monthlyWorkforceSavings">$0</dd></div>
+              <div><dt>Other workforce impact</dt><dd id="monthlyWorkforceSavings">$0</dd></div>
               <div><dt>Total gross benefit</dt><dd id="grossMonthlyBenefit">$0</dd></div>
             </dl>
           </article>

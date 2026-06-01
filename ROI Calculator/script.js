@@ -9,15 +9,15 @@ const defaults = {
   rampProductivity: 50,
   monthlyCallVolume: 320000,
   talkTimeMinutes: 6,
-  acwMinutes: 2,
+  acwMinutes: 0,
   scriptedIntentPercent: 70,
   autonomousIntentPercent: 30,
   agentMonthlyHours: 160,
-  proactiveDigitalDeflection: 20,
+  proactiveDigitalDeflection: 0,
   selfServiceContainment: 30,
   ahtReduction: 5,
-  turnoverReduction: 8,
-  assistantCoverage: 90,
+  turnoverReduction: 0,
+  assistantCoverage: 100,
   realizationFactor: 75,
   pricingTier: "retail",
   agentUnitRate: 100,
@@ -116,7 +116,7 @@ function readSavedEstimate() {
 }
 
 function positive(id) {
-  return Math.max(0, Number(inputs[id]?.value || 0));
+  return Math.max(0, Number(inputs[id]?.value ?? defaults[id] ?? 0));
 }
 
 function percent(id) {
@@ -241,9 +241,7 @@ function updateCalculator() {
   const ahtMinutesSaved = assistedContacts * handleMinutes * percent("ahtReduction") * realization;
   const ahtSavings = (ahtMinutesSaved / 60) * (monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours")));
 
-  const avoidedTurnover = totalAgents * percent("turnoverRate") * percent("turnoverReduction") / 12;
-  const rampLoss = positive("hireTrainCost") + ((positive("agentLoadedCost") / 12) * positive("rampMonths") * (1 - percent("rampProductivity")));
-  const workforceSavings = avoidedTurnover * rampLoss * realization;
+  const workforceSavings = 0;
 
   const grossMonthlyBenefit = deflectionSavings + ahtSavings + workforceSavings;
   const agentLicenseCost = units.agent * positive("agentUnitRate");
@@ -286,11 +284,11 @@ function updateCalculator() {
   setList(outputs.valueLeverList, [
     "AI Agent completion reduces contacts reaching human agents.",
     "AI Assistant reduces handle time on remaining human interactions.",
-    "Agent experience improvements can reduce turnover and ramp cost."
+    "Fully loaded agent cost converts avoided work into business value."
   ]);
   setList(outputs.nextActionList, [
     "Validate the Step 1 unit quantities against the current scope.",
-    "Replace default labor-cost and AHT assumptions with customer data.",
+    "Replace loaded agent cost, monthly volume, and AHT with customer data.",
     "Keep AI Agent, AI Assistant, and AI QM pricing separate in commercial review."
   ]);
 }

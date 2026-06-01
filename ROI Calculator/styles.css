@@ -26,7 +26,7 @@ body {
 a { color: inherit; text-decoration: none; }
 
 .topbar {
-  position: sticky; top: 0; z-index: 10;
+  position: relative; z-index: 10;
   display: flex; align-items: center; justify-content: space-between; gap: 18px;
   padding: 12px clamp(18px, 4vw, 56px);
   color: #fff;
@@ -93,6 +93,8 @@ small { color: #60737e; font-size: 0.82rem; font-weight: 600; line-height: 1.4; 
 
 .source-card { border-top: 4px solid var(--teal); }
 .resource-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+.resource-units-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.metering-grid { grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
 .resource-grid article { display: grid; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #f8fbfc; }
 .resource-grid span { color: var(--muted); font-size: 0.84rem; font-weight: 700; }
 .resource-grid strong { font-size: clamp(1.4rem,2vw,2.2rem); }
@@ -160,6 +162,7 @@ dd { margin: 8px 0 0; font-size: clamp(1.05rem,1.2vw,1.45rem); font-weight: 700;
 
 @media (max-width: 1100px) {
   .grid-3, .summary-grid, .resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .resource-units-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
 }
 
 @media (max-width: 760px) {
