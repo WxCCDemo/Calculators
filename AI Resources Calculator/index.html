@@ -245,6 +245,14 @@
                 <small id="workforceModelRecommendation">Blended agents handle both channels — maintain consistent AI Assistant and AI QM coverage across all queues.</small>
               </label>
               <label>
+                <span>Number of human agents</span>
+                <div class="dual-control">
+                  <input id="humanAgentCountSlider" type="range" min="0" max="5000" step="1" value="200" data-sync-target="humanAgentCount" />
+                  <div class="with-unit value-volume"><input id="humanAgentCount" type="number" min="0" step="1" value="200" data-sync-target="humanAgentCountSlider" /><span>agents</span></div>
+                </div>
+                <small>Capture staffed agent count for planning and ROI context. Unit sizing still follows interaction, minute, and session consumption.</small>
+              </label>
+              <label>
                 <span>Human-agent AI product</span>
                 <select id="humanAgentProduct">
                   <option value="bundle">AI Assistant + AI QM Bundle</option>

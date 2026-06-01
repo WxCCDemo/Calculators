@@ -129,6 +129,7 @@ const defaults = {
   agentMode: "both",
   workforceModel: "blended",
   humanAgentProduct: "bundle",
+  humanAgentCount: 200,
   channelVoice: true,
   channelDigital: true,
   channelOutbound: false,
@@ -323,6 +324,7 @@ const syncPairs = [
   ["agentDigitalAutonomousPercent", "agentDigitalAutonomousPercentNumber"],
   ["agentOutboundAutonomousPercent", "agentOutboundAutonomousPercentNumber"],
   ["agentOutboundMessages", "agentOutboundMessagesSlider"],
+  ["humanAgentCount", "humanAgentCountSlider"],
   ["directAgentVoiceCalls", "directAgentVoiceCallsSlider"],
   ["directAgentDigitalClients", "directAgentDigitalClientsSlider"],
   ["assistantVoiceCoveragePercent", "assistantVoiceCoveragePercentNumber"],
@@ -551,12 +553,13 @@ function updateVerticalAlignment(profile) {
   setReferenceOutcomes(profile);
 }
 
-function updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, scriptedUnits, autonomousUnits) {
+function updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, scriptedUnits, autonomousUnits, humanAgentCount) {
   const wg = getWorkforceGuidance();
   const channelText = activeChannelLabels().join(", ") || "no active AI Agent channels";
+  const agentText = humanAgentCount ? ` across ${numberFormat.format(humanAgentCount)} human agents` : "";
   outputs.summaryTitle.textContent = `${profile.label} use case plan`;
   outputs.summaryText.textContent  =
-    `${profile.summary} ${wg.summary} Scope: ${channelText}. Product-specific quantities are ${numberFormat.format(agentTotalUnits)} Webex AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} Webex AI Assistant, and ${numberFormat.format(qmUnits)} Webex AI QM. These are separate products and are not combined into a total. The estimate covers ${numberFormat.format(aiHandledContacts)} AI-handled contacts and ${numberFormat.format(humanHandledContacts)} human-handled contacts.`;
+    `${profile.summary} ${wg.summary} Scope: ${channelText}. Product-specific quantities are ${numberFormat.format(agentTotalUnits)} Webex AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} Webex AI Assistant, and ${numberFormat.format(qmUnits)} Webex AI QM. These are separate products and are not combined into a total. The estimate covers ${numberFormat.format(aiHandledContacts)} AI-handled contacts and ${numberFormat.format(humanHandledContacts)} human-handled contacts${agentText}.`;
   setList(outputs.useCaseList,    profile.useCases);
   setList(outputs.nextActionList, [...profile.nextActions, wg.action]);
 }
@@ -611,6 +614,7 @@ function updateUseCasePrioritisation(profile) {
 function updateCalculator() {
   const profile  = industryProfiles[inputs.industryType.value] || industryProfiles.other;
   const agentType = inputs.workforceModel.value;
+  const humanAgentCount = positive("humanAgentCount");
 
   updateChannelVisibility();
   updateWorkforceVisibility();
@@ -754,7 +758,7 @@ function updateCalculator() {
   setBar(outputs.assistantDigitalBar, assistantDigClients,     maxVol);
 
   const humanHandledContacts = agentVolumeVoice + agentVolumeDigital;
-  updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits);
+  updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits, humanAgentCount);
   updateUseCasePrioritisation(profile);
   updateResultExplanation({
     voiceContainedCalls,
@@ -777,6 +781,7 @@ function updateCalculator() {
       agentMode: inputs.agentMode.value,
       workforceModel: inputs.workforceModel.value,
       humanAgentProduct: inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle",
+      humanAgentCount,
       channels: activeChannelLabels()
     },
     units: {
@@ -792,6 +797,7 @@ function updateCalculator() {
       monthlyOutboundContacts,
       directAgentVoiceCalls: positive("directAgentVoiceCalls"),
       directAgentDigitalClients: positive("directAgentDigitalClients"),
+      humanAgentCount,
       voiceContainmentPercent: value("voiceContainmentPercent"),
       digitalDeflectionPercent: value("digitalDeflectionPercent"),
       outboundHandledPercent: value("outboundHandledPercent"),
