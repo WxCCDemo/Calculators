@@ -1,4 +1,4 @@
-const LOGO = "../../assets/webex-logo-transparent.png";
+const LOGO = "webex-logo-transparent.png";
 const STORAGE_KEY = "webexAiResourceEstimate";
 
 const industryProfiles = {
