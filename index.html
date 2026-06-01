@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculators — WxCC Demo</title>
+  <style>
+    :root { --ink: #14212b; --muted: #5f6f7a; --line: #d5e2e8; --teal: #10a7a7; --blue: #0b6bcb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #eef5f7; color: var(--ink); }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px clamp(18px,4vw,56px); background: rgba(12,23,32,0.96); border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .brand { display: flex; align-items: center; gap: 12px; color: #fff; font-weight: 700; text-decoration: none; }
+    .brand img { width: 38px; height: 28px; object-fit: contain; }
+    nav { display: flex; gap: 8px; }
+    nav a { padding: 8px 12px; border-radius: 6px; color: #dbe7ec; font-size: 0.94rem; text-decoration: none; }
+    nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    main { max-width: 960px; margin: 0 auto; padding: clamp(40px,6vw,80px) clamp(18px,4vw,40px); }
+    h1 { font-size: clamp(2rem,4vw,3rem); margin: 0 0 12px; }
+    .eyebrow { margin: 0 0 16px; color: var(--teal); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .intro { color: #364a56; font-size: 1.1rem; line-height: 1.6; max-width: 640px; margin: 0 0 48px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 28px; text-decoration: none; color: inherit; box-shadow: 0 14px 38px rgba(20,33,43,0.08); transition: box-shadow 0.2s; display: grid; gap: 12px; }
+    .card:hover { box-shadow: 0 20px 50px rgba(20,33,43,0.15); }
+    .card-tag { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--teal); }
+    .card h2 { margin: 0; font-size: 1.4rem; }
+    .card p { margin: 0; color: #41525d; line-height: 1.55; font-size: 0.95rem; }
+    .card .status { font-size: 0.82rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; justify-self: start; }
+    .status.live { background: #e6f9f0; color: #15803d; }
+    .status.coming { background: #f3f4f6; color: #6b7280; }
+    .arrow { justify-self: end; color: var(--blue); font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="index.html">
+      <img src="assets/webex-logo-transparent.png" alt="" />
+      <span>WxCC Demo</span>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="AI Resources Calculator/index.html">AI Resource Calculator</a>
+      <a href="ROI Calculator/index.html">ROI Calculator</a>
+    </nav>
+  </header>
+  <main>
+    <p class="eyebrow">Webex AI Planning Tools</p>
+    <h1>Calculators</h1>
+    <p class="intro">Two interconnected planning tools for sizing and justifying Webex AI investments. Start with the AI Resource Calculator, then carry your outputs directly into the ROI Calculator.</p>
+    <div class="cards">
+      <a class="card" href="AI Resources Calculator/index.html">
+        <span class="card-tag">Step 1</span>
+        <h2>AI Resource Calculator</h2>
+        <p>Select an industry profile, choose your AI Agent operating model, and calculate the quantity of Webex AI units required.</p>
+        <span class="status live">Live</span>
+        <span class="arrow">&#8594;</span>
+      </a>
+      <a class="card" href="ROI Calculator/index.html">
+        <span class="card-tag">Step 2</span>
+        <h2>ROI Calculator</h2>
+        <p>Take the unit outputs from Step 1 and model the business case — cost savings, agent productivity, and payback period.</p>
+        <span class="status coming">Coming soon</span>
+        <span class="arrow">&#8594;</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
