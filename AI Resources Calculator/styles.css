@@ -99,6 +99,12 @@ input[type="range"] { min-height: 28px; padding: 0; accent-color: var(--teal); }
 .dual-control { display: flex; gap: 10px; align-items: center; }
 .dual-control > input[type="range"] { flex: 1 1 auto; min-width: 100px; }
 .dual-control .with-unit { flex: 0 0 auto; }
+.split-slider { display: grid; gap: 8px; }
+.split-slider-labels { display: flex; justify-content: space-between; gap: 10px; }
+.split-slider-labels { color: #41525d; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; }
+.mix-control { display: grid; grid-template-columns: 110px minmax(110px, 1fr) 110px; gap: 10px; align-items: center; }
+.mix-control > input[type="range"] { min-width: 0; }
+.mix-percent input[readonly] { color: #41525d; background: #f2f7f9; }
 .value-percent { width: 110px; }
 .value-small   { width: 120px; }
 .value-volume  { width: 170px; }

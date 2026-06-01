@@ -5,13 +5,13 @@ const industryProfiles = {
   financial: {
     label: "Financial services",
     voiceContainmentPercent: 58, digitalDeflectionPercent: 48, outboundHandledPercent: 38,
-    aiAgentVoiceMinutes: 3.2, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 90, humanAhtMinutes: 7,
+    aiAgentVoiceMinutes: 192, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 90, humanAhtMinutes: 420,
     recommendation: "Start with balance checks, card support, branch/service hours, status requests, and secure handoff intents.",
     verticalGuidance: "Use this vertical alignment for authenticated requests, status checks, servicing hours, card support, and guided escalation.",
     summary: "Start with high-volume authenticated service requests, then reserve autonomous AI Agent capacity for ambiguous troubleshooting and policy questions.",
     references: [
       { metric: "10%", label: "abandoned-call reduction signal", detail: "Useful when current queues have high wait time or avoidable repeat calls." },
-      { metric: "3 min", label: "faster employee resolution signal", detail: "Relevant for internal support and assisted-agent journeys." },
+      { metric: "180 sec", label: "faster employee resolution signal", detail: "Relevant for internal support and assisted-agent journeys." },
       { metric: "43%", label: "call-deflection signal", detail: "Use as a directional benchmark for routine financial-service requests." }
     ],
     useCases: ["Account and card servicing", "Loan or application status", "Branch, ATM, and service-hour questions", "Secure escalation to specialist teams"],
@@ -20,7 +20,7 @@ const industryProfiles = {
   insurance: {
     label: "Insurance",
     voiceContainmentPercent: 62, digitalDeflectionPercent: 45, outboundHandledPercent: 55,
-    aiAgentVoiceMinutes: 3.8, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 8,
+    aiAgentVoiceMinutes: 228, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 480,
     recommendation: "Prioritize claim status, policy questions, payment support, document collection, and renewal journeys.",
     verticalGuidance: "Use this vertical alignment for claims, billing, policy servicing, renewals, and document collection.",
     summary: "Use scripted AI Agent flows for status and payment journeys, with autonomous support for policy explanation and claim triage.",
@@ -35,7 +35,7 @@ const industryProfiles = {
   retail: {
     label: "Retail",
     voiceContainmentPercent: 55, digitalDeflectionPercent: 60, outboundHandledPercent: 50,
-    aiAgentVoiceMinutes: 2.6, assistantVoiceCoveragePercent: 80, assistantDigitalCoveragePercent: 90, humanAhtMinutes: 5.5,
+    aiAgentVoiceMinutes: 156, assistantVoiceCoveragePercent: 80, assistantDigitalCoveragePercent: 90, humanAhtMinutes: 330,
     recommendation: "Focus on order status, return eligibility, delivery exceptions, loyalty questions, and store information.",
     verticalGuidance: "Use this vertical alignment for order status, returns, delivery exceptions, loyalty, and store service requests.",
     summary: "Retail plans usually benefit from strong digital deflection and short voice automation for repeatable service requests.",
@@ -50,7 +50,7 @@ const industryProfiles = {
   healthcare: {
     label: "Healthcare",
     voiceContainmentPercent: 45, digitalDeflectionPercent: 38, outboundHandledPercent: 35,
-    aiAgentVoiceMinutes: 3.5, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 80, humanAhtMinutes: 7.5,
+    aiAgentVoiceMinutes: 210, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 80, humanAhtMinutes: 450,
     recommendation: "Start with appointment, location, preparation, billing, and non-clinical administrative journeys.",
     verticalGuidance: "Use this vertical alignment for appointments, billing, clinic information, preparation instructions, and non-clinical routing.",
     summary: "Use conservative containment and strong assistant coverage so clinical or sensitive cases move quickly to trained staff.",
@@ -65,7 +65,7 @@ const industryProfiles = {
   travel: {
     label: "Travel and hospitality",
     voiceContainmentPercent: 52, digitalDeflectionPercent: 55, outboundHandledPercent: 45,
-    aiAgentVoiceMinutes: 3, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 6.5,
+    aiAgentVoiceMinutes: 180, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 390,
     recommendation: "Begin with booking status, itinerary changes, baggage, cancellation rules, loyalty, and disruption updates.",
     verticalGuidance: "Use this vertical alignment for booking support, itinerary changes, baggage updates, cancellations, and disruption triage.",
     summary: "Travel use cases need flexible digital journeys and clear escalation paths during disruption periods.",
@@ -80,7 +80,7 @@ const industryProfiles = {
   shipping: {
     label: "Shipping and logistics",
     voiceContainmentPercent: 50, digitalDeflectionPercent: 55, outboundHandledPercent: 60,
-    aiAgentVoiceMinutes: 2.8, assistantVoiceCoveragePercent: 88, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 6.5,
+    aiAgentVoiceMinutes: 168, assistantVoiceCoveragePercent: 88, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 390,
     recommendation: "Start with shipment tracking, delivery ETA, exception handling, collection scheduling, and proof-of-delivery queries.",
     verticalGuidance: "Use this vertical alignment for parcel tracking, re-delivery, collection, claims, and customs document queries.",
     summary: "Logistics operations benefit from high outbound proactive notifications and strong digital containment for status and exception requests.",
@@ -95,7 +95,7 @@ const industryProfiles = {
   public: {
     label: "Public sector",
     voiceContainmentPercent: 42, digitalDeflectionPercent: 40, outboundHandledPercent: 40,
-    aiAgentVoiceMinutes: 3.4, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 80, humanAhtMinutes: 8,
+    aiAgentVoiceMinutes: 204, assistantVoiceCoveragePercent: 90, assistantDigitalCoveragePercent: 80, humanAhtMinutes: 480,
     recommendation: "Target eligibility, appointment, application status, document checklist, and service-location questions.",
     verticalGuidance: "Use this vertical alignment for application status, eligibility navigation, appointments, document checklists, and service locations.",
     summary: "Public-sector plans should use transparent scripted journeys with autonomous support only for bounded service navigation.",
@@ -110,7 +110,7 @@ const industryProfiles = {
   other: {
     label: "Custom industry",
     voiceContainmentPercent: 50, digitalDeflectionPercent: 45, outboundHandledPercent: 45,
-    aiAgentVoiceMinutes: 3, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 7,
+    aiAgentVoiceMinutes: 180, assistantVoiceCoveragePercent: 85, assistantDigitalCoveragePercent: 85, humanAhtMinutes: 420,
     recommendation: "Use your top repeatable requests as scripted flows and reserve autonomous AI for broader troubleshooting.",
     verticalGuidance: "Use this custom alignment as a discovery baseline, then replace assumptions with your measured contact-driver data.",
     summary: "Use the calculator as a discovery model: start with repeatable contact drivers, then refine assumptions with operational data.",
@@ -128,6 +128,7 @@ const defaults = {
   industryType: "financial",
   agentMode: "both",
   workforceModel: "blended",
+  humanAgentProduct: "bundle",
   channelVoice: true,
   channelDigital: true,
   channelOutbound: false,
@@ -137,8 +138,8 @@ const defaults = {
   voiceContainmentPercent: 58,
   digitalDeflectionPercent: 48,
   outboundHandledPercent: 45,
-  aiAgentVoiceMinutes: 3.2,
-  outboundAiMinutes: 2.4,
+  aiAgentVoiceMinutes: 192,
+  outboundAiMinutes: 144,
   agentVoiceAutonomousPercent: 30,
   agentDigitalAutonomousPercent: 35,
   agentOutboundAutonomousPercent: 40,
@@ -146,12 +147,9 @@ const defaults = {
   directAgentVoiceCalls: 0,
   directAgentDigitalClients: 0,
   assistantVoiceCoveragePercent: 90,
-  humanAhtMinutes: 7,
+  humanAhtMinutes: 420,
   assistantDigitalCoveragePercent: 90,
-  assistantInboundMessages: 10,
-  qmVoiceCoveragePercent: 80,
-  qmDigitalCoveragePercent: 70,
-  humanAgentProduct: 'assistant'
+  assistantInboundMessages: 10
 };
 
 const priorityGuidance = {
@@ -249,10 +247,16 @@ const outputs = {
   referenceTitle: document.getElementById("referenceTitle"),
   referenceOutcomeList: document.getElementById("referenceOutcomeList"),
   workforceModelRecommendation: document.getElementById("workforceModelRecommendation"),
-  totalUnits: document.getElementById("totalUnits"),
   agentTotalUnits: document.getElementById("agentTotalUnits"),
   assistantUnits: document.getElementById("assistantUnits"),
   qmUnits: document.getElementById("qmUnits"),
+  humanAgentProductNote: document.getElementById("humanAgentProductNote"),
+  assistantVoiceCoverageLabel: document.getElementById("assistantVoiceCoverageLabel"),
+  assistantVoiceCoverageHelp: document.getElementById("assistantVoiceCoverageHelp"),
+  assistantDigitalCoverageLabel: document.getElementById("assistantDigitalCoverageLabel"),
+  assistantDigitalCoverageHelp: document.getElementById("assistantDigitalCoverageHelp"),
+  qmSubSectionDesc: document.getElementById("qmSubSectionDesc"),
+  qmSizingNote: document.getElementById("qmSizingNote"),
   aiHandledContacts: document.getElementById("aiHandledContacts"),
   agentVoiceScriptedUnits: document.getElementById("agentVoiceScriptedUnits"),
   agentVoiceAutonomousUnits: document.getElementById("agentVoiceAutonomousUnits"),
@@ -264,6 +268,9 @@ const outputs = {
   agentAutonomousTotalUnits: document.getElementById("agentAutonomousTotalUnits"),
   agentScriptedShare: document.getElementById("agentScriptedShare"),
   agentAutonomousShare: document.getElementById("agentAutonomousShare"),
+  voiceScriptedMix: document.getElementById("voiceScriptedMix"),
+  digitalScriptedMix: document.getElementById("digitalScriptedMix"),
+  outboundScriptedMix: document.getElementById("outboundScriptedMix"),
   agentBifurcationCard: document.getElementById("agentBifurcationCard"),
   agentBifurcationNote: document.getElementById("agentBifurcationNote"),
   voiceContainedCalls: document.getElementById("voiceContainedCalls"),
@@ -278,10 +285,6 @@ const outputs = {
   assistantDigitalSessions: document.getElementById("assistantDigitalSessions"),
   qmVoiceEvaluations: document.getElementById("qmVoiceEvaluations"),
   qmDigitalEvaluations: document.getElementById("qmDigitalEvaluations"),
-  assistantUnitsLabel: document.getElementById("assistantUnitsLabel"),
-  qmUnitsLabel: document.getElementById("qmUnitsLabel"),
-  qmMetricCard: document.getElementById("qmMetricCard"),
-  humanAgentProductNote: document.getElementById("humanAgentProductNote"),
   qmSubSection: document.getElementById("qmSubSection"),
   resultWhyTitle: document.getElementById("resultWhyTitle"),
   resultWhyText: document.getElementById("resultWhyText"),
@@ -326,8 +329,6 @@ const syncPairs = [
   ["humanAhtMinutes", "humanAhtMinutesSlider"],
   ["assistantDigitalCoveragePercent", "assistantDigitalCoveragePercentNumber"],
   ["assistantInboundMessages", "assistantInboundMessagesSlider"],
-  ["qmVoiceCoveragePercent", "qmVoiceCoveragePercentNumber"],
-  ["qmDigitalCoveragePercent", "qmDigitalCoveragePercentNumber"]
 ];
 
 function value(id) {
@@ -359,6 +360,7 @@ function syncControlPair(event) {
 
 function positive(id) { return Math.max(0, value(id)); }
 function percent(id)  { return Math.min(Math.max(value(id), 0), 100) / 100; }
+function secondsToMinutes(seconds) { return seconds / 60; }
 
 function channelEnabled(channel) {
   if (inputs.agentMode.value === "none") return false;
@@ -402,8 +404,8 @@ function updateWorkforceVisibility() {
   });
 }
 
-function messageSessions(clients, messagesPerClient) {
-  return clients * Math.ceil(Math.max(1, messagesPerClient) / 10);
+function messageSessions(interactions, messagesPerInteraction) {
+  return interactions * Math.ceil(Math.max(1, messagesPerInteraction) / 10);
 }
 
 function units(amount, allowance) { return Math.ceil(amount / allowance); }
@@ -414,15 +416,51 @@ function setBar(element, amount, max) {
 
 function formatPercent(val) { return `${Math.round(val * 100)}%`; }
 
+function updateMixReadout(prefix, autonomousRate) {
+  const scripted = Math.round((1 - autonomousRate) * 100);
+  const scriptedEl = outputs[`${prefix}ScriptedMix`];
+  if (scriptedEl) scriptedEl.value = scripted;
+}
+
 function updateProductVisibility() {
-  const product = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : 'assistant';
-  if (outputs.qmSubSection) outputs.qmSubSection.hidden = product === 'assistant';
-  const notes = {
-    assistant: 'Real-time transcription, AutoCSAT, sentiment analysis, summaries, and real-time agent assist. 1,500 min / 1,000 digital sessions per unit.',
-    qm: 'Evaluation form creation, AI evaluations & scoring, speech analytics, and coaching insights. 1,500 min / 1,000 digital sessions per unit.',
-    bundle: 'Superset of AI Assistant and AI QM. Blended agents: 1,500 min / 1,000 sessions per unit. Single workload: 2,500 min / 1,600 sessions per unit.'
-  };
-  if (outputs.humanAgentProductNote) outputs.humanAgentProductNote.textContent = notes[product] || notes.assistant;
+  if (outputs.qmSubSection) outputs.qmSubSection.hidden = false;
+  const product = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle";
+  const copy = {
+    bundle: {
+      note: "Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM.",
+      voiceLabel: "Human voice calls covered by bundle",
+      voiceHelp: "% of human-escalated voice calls covered by the bundle. Use 100% to match the Excel bundle row.",
+      digitalLabel: "Human digital interactions covered by bundle",
+      digitalHelp: "% of human-escalated digital chats or messages covered by the bundle.",
+      qmDesc: "Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM. Voice formula: human-agent calls x coverage % x human AHT minutes, then divide by 1,500 minutes per Unit.",
+      qmNote: "<strong>Bundled sizing:</strong> AI Assistant and AI QM show the same unit quantity. AI QM covers auto-scoring, sentiment analysis, compliance checking, and performance coaching for those agent interactions."
+    },
+    assistant: {
+      note: "AI Assistant only calculates AI Assistant quantity; AI QM quantity is zero.",
+      voiceLabel: "Human voice calls using AI Assistant",
+      voiceHelp: "% of human-escalated voice calls where agents use AI Assistant.",
+      digitalLabel: "Human digital interactions using AI Assistant",
+      digitalHelp: "% of human-escalated digital chats or messages where agents use AI Assistant.",
+      qmDesc: "AI QM is not included in AI Assistant only mode.",
+      qmNote: "<strong>AI QM not included:</strong> Select AI QM only or Bundle if Quality Management quantity is required."
+    },
+    qm: {
+      note: "AI QM only calculates AI QM quantity; AI Assistant quantity is zero.",
+      voiceLabel: "Human voice calls covered by AI QM",
+      voiceHelp: "% of human-escalated voice calls to be scored or evaluated by AI QM.",
+      digitalLabel: "Human digital interactions covered by AI QM",
+      digitalHelp: "% of human-escalated digital chats or messages to be scored or evaluated by AI QM.",
+      qmDesc: "AI QM only mode sizes Quality Management from the selected human-agent interaction coverage. AI Assistant is not included.",
+      qmNote: "<strong>AI QM sizing:</strong> Uses the selected coverage, human-agent AHT, and digital session assumptions to calculate AI QM quantity."
+    }
+  }[product];
+  if (outputs.humanAgentProductNote) outputs.humanAgentProductNote.textContent = copy.note;
+  if (outputs.assistantVoiceCoverageLabel) outputs.assistantVoiceCoverageLabel.textContent = copy.voiceLabel;
+  if (outputs.assistantVoiceCoverageHelp) outputs.assistantVoiceCoverageHelp.textContent = copy.voiceHelp;
+  if (outputs.assistantDigitalCoverageLabel) outputs.assistantDigitalCoverageLabel.textContent = copy.digitalLabel;
+  if (outputs.assistantDigitalCoverageHelp) outputs.assistantDigitalCoverageHelp.textContent = copy.digitalHelp;
+  if (outputs.qmSubSectionDesc) outputs.qmSubSectionDesc.textContent = copy.qmDesc;
+  if (outputs.qmSizingNote) outputs.qmSizingNote.innerHTML = copy.qmNote;
 }
 
 function setList(list, items) {
@@ -475,13 +513,13 @@ function updateAgentModeUi() {
   outputs.divisionControls.hidden = mode !== "both";
   outputs.agentBifurcationCard.hidden = false;
   if (mode === "scripted") {
-    outputs.agentModeRecommendation.textContent = "Scripted mode is best for deterministic journeys such as status lookup, payments, forms, and eligibility checks.";
+    outputs.agentModeRecommendation.textContent = "Scripted mode sets scripted AI Agent work to 100%. Use it for deterministic journeys such as status lookup, payments, forms, and eligibility checks.";
   } else if (mode === "autonomous") {
-    outputs.agentModeRecommendation.textContent = "Autonomous mode is best for natural-language troubleshooting, complex questions, and broader service navigation.";
+    outputs.agentModeRecommendation.textContent = "Autonomous mode sets autonomous AI Agent work to 100%. Use it for natural-language troubleshooting, complex questions, and broader service navigation.";
   } else if (mode === "none") {
     outputs.agentModeRecommendation.textContent = "AI Agent is not in scope. Enter human-handled voice and digital volumes below to size AI Assistant and AI QM only.";
   } else {
-    outputs.agentModeRecommendation.textContent = "Use the division controls to decide how much work should be autonomous versus scripted.";
+    outputs.agentModeRecommendation.textContent = "Use the division controls to set autonomous share by channel. Scripted share is calculated as the remaining percentage.";
   }
 }
 
@@ -513,12 +551,12 @@ function updateVerticalAlignment(profile) {
   setReferenceOutcomes(profile);
 }
 
-function updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, scriptedUnits, autonomousUnits) {
+function updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, scriptedUnits, autonomousUnits) {
   const wg = getWorkforceGuidance();
   const channelText = activeChannelLabels().join(", ") || "no active AI Agent channels";
   outputs.summaryTitle.textContent = `${profile.label} use case plan`;
   outputs.summaryText.textContent  =
-    `${profile.summary} ${wg.summary} Scope: ${channelText}. Assumptions require ${numberFormat.format(totalUnits)} total units — ${numberFormat.format(agentTotalUnits)} AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} AI Assistant, and ${numberFormat.format(qmUnits)} AI QM — covering ${numberFormat.format(aiHandledContacts)} AI-handled contacts and ${numberFormat.format(humanHandledContacts)} human-handled contacts.`;
+    `${profile.summary} ${wg.summary} Scope: ${channelText}. Product-specific quantities are ${numberFormat.format(agentTotalUnits)} Webex AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} Webex AI Assistant, and ${numberFormat.format(qmUnits)} Webex AI QM. These are separate products and are not combined into a total. The estimate covers ${numberFormat.format(aiHandledContacts)} AI-handled contacts and ${numberFormat.format(humanHandledContacts)} human-handled contacts.`;
   setList(outputs.useCaseList,    profile.useCases);
   setList(outputs.nextActionList, [...profile.nextActions, wg.action]);
 }
@@ -527,18 +565,22 @@ function updateResultExplanation(metrics) {
   const active = activeChannelLabels();
   const lines = [];
   if (inputs.agentMode.value === "none") {
-    lines.push("AI Agent is not required, so AI Agent units are zero. AI Assistant and AI QM are sized from the manual human-handled voice and digital volumes.");
+    lines.push("AI Agent is not required, so AI Agent quantity is zero. AI Assistant and AI QM are sized from the manual human-handled voice and digital volumes.");
   }
   if (active.includes("voice")) {
-    lines.push(`Voice: ${numberFormat.format(metrics.voiceContainedCalls)} calls are handled by AI Agent and ${numberFormat.format(metrics.voiceRemainingCalls)} calls remain for human agents.`);
+    lines.push(`Voice: all in-scope calls route to AI Agent first; ${numberFormat.format(metrics.voiceContainedCalls)} calls complete in AI Agent and ${numberFormat.format(metrics.voiceRemainingCalls)} calls escalate to human agents.`);
   }
   if (active.includes("digital")) {
-    lines.push(`Digital: ${numberFormat.format(metrics.digitalDeflectedClients)} clients are handled by AI Agent and ${numberFormat.format(metrics.digitalRemainingClients)} clients remain for human agents.`);
+    lines.push(`Digital: ${numberFormat.format(metrics.digitalDeflectedClients)} interactions complete in AI Agent and ${numberFormat.format(metrics.digitalRemainingClients)} interactions continue to human agents.`);
   }
   if (active.includes("outbound")) {
-    lines.push(`Voice Outbound: ${numberFormat.format(metrics.outboundHandledContacts)} contacts are handled by AI Agent and ${numberFormat.format(metrics.outboundRemainingContacts)} contacts remain for human agents.`);
+    lines.push(`Voice Outbound: ${numberFormat.format(metrics.outboundHandledContacts)} contacts complete in AI Agent and ${numberFormat.format(metrics.outboundRemainingContacts)} contacts continue to human agents.`);
   }
-  lines.push(`AI Assistant covers ${numberFormat.format(metrics.assistantVoiceCalls)} human voice interactions and ${numberFormat.format(metrics.assistantDigClients)} human digital clients based on the selected coverage percentages.`);
+  const humanProduct = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle";
+  const productText = humanProduct === "assistant" ? "AI Assistant"
+    : humanProduct === "qm" ? "AI QM"
+    : "AI Assistant and AI QM bundle";
+  lines.push(`${productText} covers ${numberFormat.format(metrics.coveredVoiceCalls)} human voice interactions and ${numberFormat.format(metrics.coveredDigInteractions)} human digital interactions based on the selected coverage percentages.`);
   if (outputs.resultWhyTitle) {
     outputs.resultWhyTitle.textContent = active.length === 1
       ? `${active[0] === "outbound" ? "Voice Outbound" : active[0][0].toUpperCase() + active[0].slice(1)} result explanation`
@@ -589,13 +631,19 @@ function updateCalculator() {
   const digitalDeflectionRate = percent("digitalDeflectionPercent");
   const outboundHandledRate   = percent("outboundHandledPercent");
   const { voiceAutonomousRate, digitalAutonomousRate, outboundAutonomousRate } = getAgentRates();
+  updateMixReadout("voice", voiceAutonomousRate);
+  updateMixReadout("digital", digitalAutonomousRate);
+  updateMixReadout("outbound", outboundAutonomousRate);
 
   const voiceContainedCalls     = monthlyVoiceCalls * voiceContainmentRate;
   const voiceRemainingCalls     = monthlyVoiceCalls - voiceContainedCalls;
   const digitalDeflectedClients = monthlyDigitalClients * digitalDeflectionRate;
   const digitalRemainingClients = monthlyDigitalClients - digitalDeflectedClients;
 
-  const agentVoiceMin    = monthlyVoiceCalls * positive("aiAgentVoiceMinutes");
+  // Match the source license model: every in-scope voice call enters the AI Agent
+  // conversation, even when some calls later escalate to a human agent.
+  const agentVoiceSeconds = monthlyVoiceCalls * positive("aiAgentVoiceMinutes");
+  const agentVoiceMin    = secondsToMinutes(agentVoiceSeconds);
   const agentVoiceAutoMin = agentVoiceMin * voiceAutonomousRate;
   const agentVoiceScriptMin = agentVoiceMin - agentVoiceAutoMin;
 
@@ -605,7 +653,8 @@ function updateCalculator() {
 
   const outboundHandledContacts = monthlyOutboundContacts * outboundHandledRate;
   const outboundRemainingContacts = monthlyOutboundContacts - outboundHandledContacts;
-  const agentObMin     = outboundHandledContacts * positive("outboundAiMinutes");
+  const agentObSeconds = outboundHandledContacts * positive("outboundAiMinutes");
+  const agentObMin     = secondsToMinutes(agentObSeconds);
   const agentObAutoMin = agentObMin * outboundAutonomousRate;
   const agentObScriptMin = agentObMin - agentObAutoMin;
 
@@ -630,43 +679,26 @@ function updateCalculator() {
   // ── AI Assistant & AI QM ────────────────────────────────────────────
   const assistantVoiceCoverageRate   = percent("assistantVoiceCoveragePercent");
   const assistantDigitalCoverageRate = percent("assistantDigitalCoveragePercent");
-  const humanAhtMinutes              = positive("humanAhtMinutes");
+  const humanAhtSeconds              = positive("humanAhtMinutes");
+  const humanAhtMinutes              = secondsToMinutes(humanAhtSeconds);
 
-  const assistantVoiceCalls   = assistantCoversVoice   ? agentVolumeVoice   * assistantVoiceCoverageRate   : 0;
-  const assistantVoiceMinutes = assistantVoiceCalls * humanAhtMinutes;
-  const assistantDigClients   = assistantCoversDigital ? agentVolumeDigital  * assistantDigitalCoverageRate : 0;
-  const assistantDigSessions  = messageSessions(assistantDigClients, positive("assistantInboundMessages"));
+  const coveredVoiceCalls   = assistantCoversVoice   ? agentVolumeVoice   * assistantVoiceCoverageRate   : 0;
+  const coveredVoiceSeconds = coveredVoiceCalls * humanAhtSeconds;
+  const coveredVoiceMinutes = secondsToMinutes(coveredVoiceSeconds);
+  const coveredDigInteractions = assistantCoversDigital ? agentVolumeDigital  * assistantDigitalCoverageRate : 0;
+  const coveredDigSessions  = messageSessions(coveredDigInteractions, positive("assistantInboundMessages"));
 
-  const qmVoiceCoverageRate   = percent("qmVoiceCoveragePercent");
-  const qmDigitalCoverageRate = percent("qmDigitalCoveragePercent");
-  const qmVoiceMinutes  = assistantCoversVoice   ? agentVolumeVoice * qmVoiceCoverageRate * humanAhtMinutes : 0;
-  const qmDigSessions   = messageSessions(assistantCoversDigital ? agentVolumeDigital * qmDigitalCoverageRate : 0, positive("assistantInboundMessages"));
-  const qmVoiceEvals    = assistantCoversVoice   ? agentVolumeVoice   * qmVoiceCoverageRate   : 0;
-  const qmDigitalEvals  = assistantCoversDigital ? agentVolumeDigital  * qmDigitalCoverageRate : 0;
-
-  const humanProduct = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : 'assistant';
-  let assistantUnits = 0;
-  let qmUnits = 0;
-
-  if (humanProduct === 'assistant') {
-    // AI Assistant: 1,500 min / 1,000 digital sessions per unit
-    assistantUnits = Math.ceil((assistantVoiceMinutes / 1500) + (assistantDigSessions / 1000));
-  } else if (humanProduct === 'qm') {
-    // AI QM: 1,500 min / 1,000 digital sessions per unit
-    qmUnits = Math.ceil((qmVoiceMinutes / 1500) + (qmDigSessions / 1000));
-  } else {
-    // Bundle — both workloads (blended): 1,500 min / 1,000 sessions; single workload: 2,500 min / 1,600 sessions
-    if (agentType === 'blended') {
-      assistantUnits = Math.ceil((assistantVoiceMinutes / 1500) + (assistantDigSessions / 1000));
-    } else if (agentType === 'voice') {
-      assistantUnits = Math.ceil(assistantVoiceMinutes / 2500);
-    } else {
-      assistantUnits = Math.ceil(assistantDigSessions / 1600);
-    }
-  }
-
-  // ── Total ───────────────────────────────────────────────────
-  const totalUnits = agentTotalUnits + assistantUnits + qmUnits;
+  // Product quantities are separate; do not combine them into a total.
+  const humanProduct = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle";
+  const coveredUnits = Math.ceil((coveredVoiceMinutes / 1500) + (coveredDigSessions / 1000));
+  const assistantUnits = humanProduct === "qm" ? 0 : coveredUnits;
+  const qmUnits = humanProduct === "assistant" ? 0 : coveredUnits;
+  const assistantVoiceCalls = humanProduct === "qm" ? 0 : coveredVoiceCalls;
+  const assistantVoiceSeconds = humanProduct === "qm" ? 0 : coveredVoiceSeconds;
+  const assistantDigClients = humanProduct === "qm" ? 0 : coveredDigInteractions;
+  const assistantDigSessions = humanProduct === "qm" ? 0 : coveredDigSessions;
+  const qmVoiceSeconds = humanProduct === "assistant" ? 0 : coveredVoiceSeconds;
+  const qmDigSessions = humanProduct === "assistant" ? 0 : coveredDigSessions;
 
   // ── Render ──────────────────────────────────────────────────
   outputs.industryRecommendation.textContent       = profile.recommendation;
@@ -674,13 +706,8 @@ function updateCalculator() {
   updateAgentModeUi();
   updateProductVisibility();
 
-  const productLabels = { assistant: 'Webex AI Assistant units', qm: 'Webex AI Assistant units', bundle: 'AI Assistant / AI QM Bundle units' };
-  if (outputs.assistantUnitsLabel) outputs.assistantUnitsLabel.textContent = productLabels[humanProduct] || productLabels.assistant;
-  if (outputs.qmMetricCard) outputs.qmMetricCard.hidden = humanProduct !== 'qm';
-
   updateVerticalAlignment(profile);
 
-  outputs.totalUnits.textContent            = numberFormat.format(totalUnits);
   outputs.agentTotalUnits.textContent       = numberFormat.format(agentTotalUnits);
   outputs.assistantUnits.textContent        = numberFormat.format(assistantUnits);
   outputs.qmUnits.textContent               = numberFormat.format(qmUnits);
@@ -697,13 +724,13 @@ function updateCalculator() {
   outputs.agentAutonomousShare.textContent = agentTotalUnits ? formatPercent(agentAutonomousTotalUnits / agentTotalUnits) : "0%";
 
   if (inputs.agentMode.value === "both") {
-    outputs.agentBifurcationNote.textContent = "Bifurcation is based on the selected division of labour between scripted and autonomous AI Agent work.";
+    outputs.agentBifurcationNote.textContent = "Bifurcation uses the autonomous share selected above; scripted share is the remainder.";
   } else if (inputs.agentMode.value === "scripted") {
-    outputs.agentBifurcationNote.textContent = "Scripted-only mode — all AI Agent units allocated to scripted automation.";
+    outputs.agentBifurcationNote.textContent = "Scripted-only mode — 100% of AI Agent quantity is allocated to scripted automation.";
   } else if (inputs.agentMode.value === "none") {
-    outputs.agentBifurcationNote.textContent = "AI Agent is not in scope, so scripted and autonomous AI Agent units are both zero.";
+    outputs.agentBifurcationNote.textContent = "AI Agent is not in scope, so scripted and autonomous AI Agent quantities are both zero.";
   } else {
-    outputs.agentBifurcationNote.textContent = "Autonomous-only mode — all AI Agent units allocated to autonomous automation.";
+    outputs.agentBifurcationNote.textContent = "Autonomous-only mode — 100% of AI Agent quantity is allocated to autonomous automation.";
   }
 
   outputs.voiceContainedCalls.textContent     = numberFormat.format(voiceContainedCalls);
@@ -714,9 +741,9 @@ function updateCalculator() {
   outputs.agentVoiceMinutes.textContent       = numberFormat.format(agentVoiceMin);
   outputs.agentDigitalSessions.textContent    = numberFormat.format(agentDigSess);
   outputs.agentOutboundMinutes.textContent    = numberFormat.format(agentObMin);
-  outputs.assistantVoiceMinutes.textContent   = numberFormat.format(assistantVoiceMinutes);
+  outputs.assistantVoiceMinutes.textContent   = numberFormat.format(assistantVoiceSeconds / 60);
   outputs.assistantDigitalSessions.textContent = numberFormat.format(assistantDigSessions);
-  outputs.qmVoiceEvaluations.textContent      = numberFormat.format(qmVoiceMinutes);
+  outputs.qmVoiceEvaluations.textContent      = numberFormat.format(qmVoiceSeconds / 60);
   outputs.qmDigitalEvaluations.textContent    = numberFormat.format(qmDigSessions);
 
   const maxVol = Math.max(voiceContainedCalls, digitalDeflectedClients, outboundHandledContacts, assistantVoiceCalls, assistantDigClients, 1);
@@ -727,7 +754,7 @@ function updateCalculator() {
   setBar(outputs.assistantDigitalBar, assistantDigClients,     maxVol);
 
   const humanHandledContacts = agentVolumeVoice + agentVolumeDigital;
-  updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits);
+  updateSummary(profile, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits);
   updateUseCasePrioritisation(profile);
   updateResultExplanation({
     voiceContainedCalls,
@@ -736,6 +763,8 @@ function updateCalculator() {
     digitalRemainingClients,
     outboundHandledContacts,
     outboundRemainingContacts,
+    coveredVoiceCalls,
+    coveredDigInteractions,
     assistantVoiceCalls,
     assistantDigClients
   });
@@ -747,10 +776,10 @@ function updateCalculator() {
       industryLabel: profile.label,
       agentMode: inputs.agentMode.value,
       workforceModel: inputs.workforceModel.value,
+      humanAgentProduct: inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle",
       channels: activeChannelLabels()
     },
     units: {
-      totalUnits,
       agentTotalUnits,
       assistantUnits,
       qmUnits,
@@ -768,9 +797,13 @@ function updateCalculator() {
       outboundHandledPercent: value("outboundHandledPercent"),
       assistantVoiceCoveragePercent: value("assistantVoiceCoveragePercent"),
       assistantDigitalCoveragePercent: value("assistantDigitalCoveragePercent"),
-      qmVoiceCoveragePercent: value("qmVoiceCoveragePercent"),
-      qmDigitalCoveragePercent: value("qmDigitalCoveragePercent"),
-      humanAhtMinutes: value("humanAhtMinutes"),
+      qmMirrorsAssistantCoverage: (inputs.humanAgentProduct ? inputs.humanAgentProduct.value : "bundle") === "bundle",
+      aiAgentVoiceSeconds: positive("aiAgentVoiceMinutes"),
+      aiAgentVoiceMinutes: secondsToMinutes(positive("aiAgentVoiceMinutes")),
+      outboundAiSeconds: positive("outboundAiMinutes"),
+      outboundAiMinutes: secondsToMinutes(positive("outboundAiMinutes")),
+      humanAhtSeconds,
+      humanAhtMinutes,
       aiHandledContacts,
       humanHandledContacts
     }

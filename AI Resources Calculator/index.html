@@ -32,7 +32,7 @@
         </div>
         <p class="intro">
           Select an industry profile, choose the AI Agent operating model, then tune the
-          assumptions to calculate the quantity of Webex AI Agent, AI Assistant, and AI QM units required.
+          assumptions to calculate the required Webex AI Agent, AI Assistant, and AI QM units.
         </p>
       </div>
     </section>
@@ -98,12 +98,12 @@
               <small id="voiceVolumeRecommendation">Use a normalised month. Exclude internal test calls and one-off campaign spikes unless they must be covered.</small>
             </label>
             <label data-channel="digital">
-              <span>Monthly digital clients</span>
+              <span>Monthly digital interactions</span>
               <div class="dual-control">
                 <input id="monthlyDigitalClientsSlider" type="range" min="0" max="1000000" step="500" value="12000" data-sync-target="monthlyDigitalClients" />
-                <div class="with-unit value-volume"><input id="monthlyDigitalClients" type="number" min="0" step="500" value="12000" data-sync-target="monthlyDigitalClientsSlider" /><span>clients</span></div>
+                <div class="with-unit value-volume"><input id="monthlyDigitalClients" type="number" min="0" step="500" value="12000" data-sync-target="monthlyDigitalClientsSlider" /><span>chats</span></div>
               </div>
-              <small id="digitalVolumeRecommendation">Count unique clients or conversations that need AI handling.</small>
+              <small id="digitalVolumeRecommendation">Count chat or messaging interactions across digital channels that need AI handling.</small>
             </label>
             <label data-channel="outbound">
               <span>Monthly voice outbound contacts</span>
@@ -116,31 +116,31 @@
           </div>
         </div>
 
-        <!-- Group 3 · Containment Targets -->
+        <!-- Group 3 · AI Agent Completion Targets -->
         <div class="calc-group">
           <div class="calc-group-header">
             <p class="eyebrow">Webex AI Agent</p>
-            <h2>Containment Targets</h2>
+            <h2>AI Agent Completion Targets</h2>
           </div>
           <div class="calc-group-body grid-3">
             <label data-channel="voice">
-              <span>Voice calls contained by AI Agent</span>
+              <span>Voice calls completed by AI Agent</span>
               <div class="dual-control">
                 <input id="voiceContainmentPercent" type="range" min="0" max="100" value="58" data-sync-target="voiceContainmentPercentNumber" />
                 <div class="with-unit value-percent"><input id="voiceContainmentPercentNumber" type="number" min="0" max="100" step="1" value="58" data-sync-target="voiceContainmentPercent" /><span>%</span></div>
               </div>
-              <small id="voiceContainmentRecommendation">Use a conservative target for phase one.</small>
+              <small id="voiceContainmentRecommendation">All in-scope voice calls route to AI Agent first. This % completes in AI Agent; the remaining calls escalate to human agents.</small>
             </label>
             <label data-channel="digital">
-              <span>Digital clients deflected by AI Agent</span>
+              <span>Digital interactions completed by AI Agent</span>
               <div class="dual-control">
                 <input id="digitalDeflectionPercent" type="range" min="0" max="100" value="48" data-sync-target="digitalDeflectionPercentNumber" />
                 <div class="with-unit value-percent"><input id="digitalDeflectionPercentNumber" type="number" min="0" max="100" step="1" value="48" data-sync-target="digitalDeflectionPercent" /><span>%</span></div>
               </div>
-              <small id="digitalDeflectionRecommendation">Digital deflection is usually strongest for order/status, policy lookup, appointment, and FAQ journeys.</small>
+              <small id="digitalDeflectionRecommendation">This % resolves in AI Agent across digital channels; the remaining interactions continue to human agents.</small>
             </label>
             <label data-channel="outbound">
-              <span>Voice outbound contacts handled by AI Agent</span>
+              <span>Voice outbound contacts completed by AI Agent</span>
               <div class="dual-control">
                 <input id="outboundHandledPercent" type="range" min="0" max="100" value="45" data-sync-target="outboundHandledPercentNumber" />
                 <div class="with-unit value-percent"><input id="outboundHandledPercentNumber" type="number" min="0" max="100" step="1" value="45" data-sync-target="outboundHandledPercent" /><span>%</span></div>
@@ -158,56 +158,68 @@
           </div>
           <div class="calc-group-body grid-3">
             <label data-channel="voice">
-              <span>Average AI Agent voice duration</span>
+              <span>Average AI Agent voice AHT</span>
               <div class="dual-control">
-                <input id="aiAgentVoiceMinutesSlider" type="range" min="0" max="15" step="0.1" value="3.2" data-sync-target="aiAgentVoiceMinutes" />
-                <div class="with-unit value-small"><input id="aiAgentVoiceMinutes" type="number" min="0" step="0.1" value="3.2" data-sync-target="aiAgentVoiceMinutesSlider" /><span>min</span></div>
+                <input id="aiAgentVoiceMinutesSlider" type="range" min="0" max="900" step="5" value="192" data-sync-target="aiAgentVoiceMinutes" />
+                <div class="with-unit value-small"><input id="aiAgentVoiceMinutes" type="number" min="0" step="5" value="192" data-sync-target="aiAgentVoiceMinutesSlider" /><span>sec</span></div>
               </div>
-              <small id="aiDurationRecommendation">Use expected bot conversation time, not current human AHT.</small>
+              <small id="aiDurationRecommendation">Average AI Agent handling time per in-scope voice call, in seconds. Results convert this to voice minutes.</small>
             </label>
             <label data-channel="outbound">
               <span>Average voice outbound AI Agent duration</span>
               <div class="dual-control">
-                <input id="outboundAiMinutesSlider" type="range" min="0" max="15" step="0.1" value="2.4" data-sync-target="outboundAiMinutes" />
-                <div class="with-unit value-small"><input id="outboundAiMinutes" type="number" min="0" step="0.1" value="2.4" data-sync-target="outboundAiMinutesSlider" /><span>min</span></div>
+                <input id="outboundAiMinutesSlider" type="range" min="0" max="900" step="5" value="144" data-sync-target="outboundAiMinutes" />
+                <div class="with-unit value-small"><input id="outboundAiMinutes" type="number" min="0" step="5" value="144" data-sync-target="outboundAiMinutesSlider" /><span>sec</span></div>
               </div>
-              <small>Use the expected AI-handled voice outbound talk time.</small>
+              <small>Use the expected AI-handled voice outbound talk time in seconds. Results convert this to minutes.</small>
             </label>
             <label data-channel="digital">
-              <span>AI Agent outbound messages per digital client</span>
+              <span>AI Agent outbound messages per digital interaction</span>
               <div class="dual-control">
                 <input id="agentOutboundMessagesSlider" type="range" min="1" max="50" step="1" value="10" data-sync-target="agentOutboundMessages" />
                 <div class="with-unit value-small"><input id="agentOutboundMessages" type="number" min="1" step="1" value="10" data-sync-target="agentOutboundMessagesSlider" /><span>msgs</span></div>
               </div>
-              <small>Every 10 outbound messages per client counts as one digital session.</small>
+              <small>Every 10 outbound messages per interaction counts as one digital session.</small>
             </label>
           </div>
           <div id="divisionControls" class="calc-sub-group">
-            <p class="sub-group-label">Autonomous share by channel</p>
+            <p class="sub-group-label">Scripted / autonomous mix by channel</p>
             <div class="calc-group-body grid-3" style="padding-top:0">
               <label data-channel="voice">
-                <span>Autonomous share — voice</span>
-                <div class="dual-control">
-                  <input id="agentVoiceAutonomousPercent" type="range" min="0" max="100" value="30" data-sync-target="agentVoiceAutonomousPercentNumber" />
-                  <div class="with-unit value-percent"><input id="agentVoiceAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="30" data-sync-target="agentVoiceAutonomousPercent" /><span>%</span></div>
+                <span>Voice automation mix</span>
+                <div class="split-slider">
+                  <div class="split-slider-labels"><span>Scripted</span><span>Autonomous</span></div>
+                  <div class="mix-control">
+                    <div class="with-unit value-percent mix-percent"><input id="voiceScriptedMix" type="number" value="70" readonly tabindex="-1" aria-label="Scripted voice share" /><span>%</span></div>
+                    <input id="agentVoiceAutonomousPercent" type="range" min="0" max="100" value="30" data-sync-target="agentVoiceAutonomousPercentNumber" />
+                    <div class="with-unit value-percent"><input id="agentVoiceAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="30" data-sync-target="agentVoiceAutonomousPercent" /><span>%</span></div>
+                  </div>
                 </div>
-                <small>Remaining voice AI Agent work is treated as scripted.</small>
+                <small>Move left for more scripted voice automation, right for more autonomous voice automation.</small>
               </label>
               <label data-channel="digital">
-                <span>Autonomous share — digital</span>
-                <div class="dual-control">
-                  <input id="agentDigitalAutonomousPercent" type="range" min="0" max="100" value="35" data-sync-target="agentDigitalAutonomousPercentNumber" />
-                  <div class="with-unit value-percent"><input id="agentDigitalAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="35" data-sync-target="agentDigitalAutonomousPercent" /><span>%</span></div>
+                <span>Digital automation mix</span>
+                <div class="split-slider">
+                  <div class="split-slider-labels"><span>Scripted</span><span>Autonomous</span></div>
+                  <div class="mix-control">
+                    <div class="with-unit value-percent mix-percent"><input id="digitalScriptedMix" type="number" value="65" readonly tabindex="-1" aria-label="Scripted digital share" /><span>%</span></div>
+                    <input id="agentDigitalAutonomousPercent" type="range" min="0" max="100" value="35" data-sync-target="agentDigitalAutonomousPercentNumber" />
+                    <div class="with-unit value-percent"><input id="agentDigitalAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="35" data-sync-target="agentDigitalAutonomousPercent" /><span>%</span></div>
+                  </div>
                 </div>
-                <small>Remaining digital AI Agent work is treated as scripted.</small>
+                <small>Move left for more scripted digital automation, right for more autonomous digital automation.</small>
               </label>
               <label data-channel="outbound">
-                <span>Autonomous share — voice outbound</span>
-                <div class="dual-control">
-                  <input id="agentOutboundAutonomousPercent" type="range" min="0" max="100" value="40" data-sync-target="agentOutboundAutonomousPercentNumber" />
-                  <div class="with-unit value-percent"><input id="agentOutboundAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="40" data-sync-target="agentOutboundAutonomousPercent" /><span>%</span></div>
+                <span>Voice outbound automation mix</span>
+                <div class="split-slider">
+                  <div class="split-slider-labels"><span>Scripted</span><span>Autonomous</span></div>
+                  <div class="mix-control">
+                    <div class="with-unit value-percent mix-percent"><input id="outboundScriptedMix" type="number" value="60" readonly tabindex="-1" aria-label="Scripted voice outbound share" /><span>%</span></div>
+                    <input id="agentOutboundAutonomousPercent" type="range" min="0" max="100" value="40" data-sync-target="agentOutboundAutonomousPercentNumber" />
+                    <div class="with-unit value-percent"><input id="agentOutboundAutonomousPercentNumber" type="number" min="0" max="100" step="1" value="40" data-sync-target="agentOutboundAutonomousPercent" /><span>%</span></div>
+                  </div>
                 </div>
-                <small>Remaining voice outbound AI Agent work is treated as scripted.</small>
+                <small>Move left for more scripted outbound automation, right for more autonomous outbound automation.</small>
               </label>
             </div>
           </div>
@@ -221,7 +233,7 @@
           </div>
           <div class="calc-group-body grid-3">
 
-            <!-- Col 1: Human agent type + AI product -->
+            <!-- Col 1: Human agent type -->
             <div class="field-stack">
               <label>
                 <span>Human agent type</span>
@@ -233,13 +245,13 @@
                 <small id="workforceModelRecommendation">Blended agents handle both channels — maintain consistent AI Assistant and AI QM coverage across all queues.</small>
               </label>
               <label>
-                <span>Human agent AI product</span>
+                <span>Human-agent AI product</span>
                 <select id="humanAgentProduct">
-                  <option value="assistant">AI Assistant</option>
-                  <option value="qm">AI Quality Management</option>
-                  <option value="bundle">AI Assistant / AI QM Bundle</option>
+                  <option value="bundle">AI Assistant + AI QM Bundle</option>
+                  <option value="assistant">AI Assistant only</option>
+                  <option value="qm">AI QM only</option>
                 </select>
-                <small id="humanAgentProductNote">Real-time transcription, AutoCSAT, sentiment analysis, summaries, and real-time agent assist. 1,500 min / 1,000 digital sessions per unit.</small>
+                <small id="humanAgentProductNote">Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM.</small>
               </label>
             </div>
 
@@ -255,20 +267,20 @@
                 <small>Enter total calls handled by voice agents — used for AI Assistant &amp; AI QM when AI Agent voice is not in scope.</small>
               </label>
               <label>
-                <span>Voice calls using AI Assistant</span>
+                <span id="assistantVoiceCoverageLabel">Human voice calls covered</span>
                 <div class="dual-control">
                   <input id="assistantVoiceCoveragePercent" type="range" min="0" max="100" value="90" data-sync-target="assistantVoiceCoveragePercentNumber" />
                   <div class="with-unit value-percent"><input id="assistantVoiceCoveragePercentNumber" type="number" min="0" max="100" step="1" value="90" data-sync-target="assistantVoiceCoveragePercent" /><span>%</span></div>
                 </div>
-                <small>Apply AI Assistant where agents need summaries, suggested responses, or knowledge lookup.</small>
+                <small id="assistantVoiceCoverageHelp">% of human-escalated voice calls covered by the selected human-agent AI product. Use 100% to match the Excel bundle row.</small>
               </label>
               <label>
-                <span>Human agent AHT with AI Assistant</span>
+                <span>Human agent AHT</span>
                 <div class="dual-control">
-                  <input id="humanAhtMinutesSlider" type="range" min="0" max="30" step="0.1" value="7" data-sync-target="humanAhtMinutes" />
-                  <div class="with-unit value-small"><input id="humanAhtMinutes" type="number" min="0" step="0.1" value="7" data-sync-target="humanAhtMinutesSlider" /><span>min</span></div>
+                  <input id="humanAhtMinutesSlider" type="range" min="0" max="1800" step="5" value="420" data-sync-target="humanAhtMinutes" />
+                  <div class="with-unit value-small"><input id="humanAhtMinutes" type="number" min="0" step="5" value="420" data-sync-target="humanAhtMinutesSlider" /><span>sec</span></div>
                 </div>
-                <small>Use expected assisted handle time for contacts that still go to agents.</small>
+                <small>Human-agent AHT in seconds for calls that still go to agents. Dennis sheet uses 270 sec.</small>
               </label>
             </div>
 
@@ -279,25 +291,25 @@
                 <span>Monthly digital contacts to human agents</span>
                 <div class="dual-control">
                   <input id="directAgentDigitalClientsSlider" type="range" min="0" max="1000000" step="500" value="0" data-sync-target="directAgentDigitalClients" />
-                  <div class="with-unit value-volume"><input id="directAgentDigitalClients" type="number" min="0" step="500" value="0" data-sync-target="directAgentDigitalClientsSlider" /><span>clients</span></div>
+                  <div class="with-unit value-volume"><input id="directAgentDigitalClients" type="number" min="0" step="500" value="0" data-sync-target="directAgentDigitalClientsSlider" /><span>chats</span></div>
                 </div>
                 <small>Enter total digital interactions handled by agents — used for AI Assistant &amp; AI QM when AI Agent digital is not in scope.</small>
               </label>
               <label>
-                <span>Digital clients using AI Assistant</span>
+                <span id="assistantDigitalCoverageLabel">Human digital interactions covered</span>
                 <div class="dual-control">
                   <input id="assistantDigitalCoveragePercent" type="range" min="0" max="100" value="90" data-sync-target="assistantDigitalCoveragePercentNumber" />
                   <div class="with-unit value-percent"><input id="assistantDigitalCoveragePercentNumber" type="number" min="0" max="100" step="1" value="90" data-sync-target="assistantDigitalCoveragePercent" /><span>%</span></div>
                 </div>
-                <small>Use this when digital agents handle chat or messaging with AI support.</small>
+                <small id="assistantDigitalCoverageHelp">% of human-escalated digital chats or messages covered by the selected human-agent AI product.</small>
               </label>
               <label>
-                <span>AI Assistant inbound messages per digital client</span>
+                <span>Inbound messages per digital interaction</span>
                 <div class="dual-control">
                   <input id="assistantInboundMessagesSlider" type="range" min="1" max="50" step="1" value="10" data-sync-target="assistantInboundMessages" />
                   <div class="with-unit value-small"><input id="assistantInboundMessages" type="number" min="1" step="1" value="10" data-sync-target="assistantInboundMessagesSlider" /><span>msgs</span></div>
                 </div>
-                <small>Every 10 inbound messages per client counts as one digital session.</small>
+                <small>Every 10 inbound messages per interaction counts as one digital session.</small>
               </label>
             </div>
 
@@ -306,26 +318,10 @@
           <!-- AI QM sub-section -->
           <div class="calc-sub-group qm-sub" id="qmSubSection">
             <p class="sub-group-label">Webex AI Quality Management (AI QM)</p>
-            <p class="sub-group-desc">AI QM automatically scores and provides feedback on agent interactions. Set the percentage of agent-handled contacts to evaluate. Metered at 1,500 voice minutes / 1,000 digital sessions per unit — same metering as AI Assistant.</p>
+            <p class="sub-group-desc" id="qmSubSectionDesc">Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM. Voice formula: human-agent calls x coverage % x human AHT, converted to minutes, then 1 Unit = 1,500 Minutes.</p>
             <div class="calc-group-body grid-3" style="padding-top:0">
-              <label data-assistant-channel="voice">
-                <span>Agent voice calls to auto-evaluate</span>
-                <div class="dual-control">
-                  <input id="qmVoiceCoveragePercent" type="range" min="0" max="100" value="80" data-sync-target="qmVoiceCoveragePercentNumber" />
-                  <div class="with-unit value-percent"><input id="qmVoiceCoveragePercentNumber" type="number" min="0" max="100" step="1" value="80" data-sync-target="qmVoiceCoveragePercent" /><span>%</span></div>
-                </div>
-                <small>% of agent-handled voice calls to be automatically scored by AI QM.</small>
-              </label>
-              <label data-assistant-channel="digital">
-                <span>Agent digital interactions to auto-evaluate</span>
-                <div class="dual-control">
-                  <input id="qmDigitalCoveragePercent" type="range" min="0" max="100" value="70" data-sync-target="qmDigitalCoveragePercentNumber" />
-                  <div class="with-unit value-percent"><input id="qmDigitalCoveragePercentNumber" type="number" min="0" max="100" step="1" value="70" data-sync-target="qmDigitalCoveragePercent" /><span>%</span></div>
-                </div>
-                <small>% of agent-handled digital interactions to be automatically scored by AI QM.</small>
-              </label>
               <div class="qm-info-cell">
-                <p class="formula"><strong>AI QM covers:</strong> Auto-scoring, sentiment analysis, compliance checking, and performance coaching for agent interactions. Can operate independently of AI Agent channel selection.</p>
+                <p class="formula" id="qmSizingNote"><strong>Bundled sizing:</strong> AI Assistant and AI QM show the same unit quantity. AI QM covers auto-scoring, sentiment analysis, compliance checking, and performance coaching for those agent interactions.</p>
               </div>
             </div>
           </div>
@@ -360,22 +356,18 @@
           <button class="download-btn no-print" onclick="downloadReport()">&#x2193; Download PDF Report</button>
         </div>
 
-        <!-- Summary metrics: Total | AI Agent | AI Assistant | AI QM -->
+        <!-- Summary metrics: AI Agent | AI Assistant | AI QM -->
         <div class="summary-grid">
-          <article class="metric primary">
-            <span>Total units needed</span>
-            <strong id="totalUnits">0</strong>
-          </article>
-          <article class="metric accent-agent">
-            <span>Webex AI Agent units</span>
+          <article class="metric primary accent-agent">
+            <span>Webex AI Agent Unit(s)</span>
             <strong id="agentTotalUnits">0</strong>
           </article>
           <article class="metric accent-assistant">
-            <span id="assistantUnitsLabel">Webex AI Assistant units</span>
+            <span>Webex AI Assistant Unit(s)</span>
             <strong id="assistantUnits">0</strong>
           </article>
-          <article class="metric accent-qm" id="qmMetricCard">
-            <span id="qmUnitsLabel">Webex AI QM units</span>
+          <article class="metric accent-qm">
+            <span>Webex AI QM Unit(s)</span>
             <strong id="qmUnits">0</strong>
           </article>
         </div>
@@ -383,34 +375,34 @@
         <!-- AI Agent unit breakdown -->
         <div class="result-grid">
           <article class="panel result-card" data-channel="voice">
-            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Voice Units</h2></div>
+            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Voice Unit(s)</h2></div>
             <dl>
-              <div><dt>Scripted voice</dt><dd><span id="agentVoiceScriptedUnits">0</span> units</dd></div>
-              <div><dt>Autonomous voice</dt><dd><span id="agentVoiceAutonomousUnits">0</span> units</dd></div>
+              <div><dt>Scripted voice</dt><dd><span id="agentVoiceScriptedUnits">0</span> Units</dd></div>
+              <div><dt>Autonomous voice</dt><dd><span id="agentVoiceAutonomousUnits">0</span> Units</dd></div>
             </dl>
-            <p class="formula">Scripted: 1 unit per 1,600 minutes. Autonomous: 1 unit per 250 LLM-powered minutes.</p>
+            <p class="formula">Metered in minutes. Scripted: 1 Unit = 1,600 Minutes. Autonomous: 1 Unit = 250 LLM-powered Minutes.</p>
           </article>
           <article class="panel result-card" data-channel="digital">
-            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Digital Units</h2></div>
+            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Digital Unit(s)</h2></div>
             <dl>
-              <div><dt>Scripted digital</dt><dd><span id="agentDigitalScriptedUnits">0</span> units</dd></div>
-              <div><dt>Autonomous digital</dt><dd><span id="agentDigitalAutonomousUnits">0</span> units</dd></div>
+              <div><dt>Scripted digital</dt><dd><span id="agentDigitalScriptedUnits">0</span> Units</dd></div>
+              <div><dt>Autonomous digital</dt><dd><span id="agentDigitalAutonomousUnits">0</span> Units</dd></div>
             </dl>
-            <p class="formula">Scripted: 1 unit per 4,800 sessions. Autonomous: 1 unit per 200 LLM-powered sessions.</p>
+            <p class="formula">Scripted: 1 Unit = 4,800 Sessions. Autonomous: 1 Unit = 200 LLM-powered Sessions.</p>
           </article>
           <article class="panel result-card" data-channel="outbound">
-            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Voice Outbound Units</h2></div>
+            <div class="panel-heading"><p class="eyebrow">Webex AI Agent</p><h2>Voice Outbound Unit(s)</h2></div>
             <dl>
-              <div><dt>Scripted voice outbound</dt><dd><span id="agentOutboundScriptedUnits">0</span> units</dd></div>
-              <div><dt>Autonomous voice outbound</dt><dd><span id="agentOutboundAutonomousUnits">0</span> units</dd></div>
+              <div><dt>Scripted voice outbound</dt><dd><span id="agentOutboundScriptedUnits">0</span> Units</dd></div>
+              <div><dt>Autonomous voice outbound</dt><dd><span id="agentOutboundAutonomousUnits">0</span> Units</dd></div>
             </dl>
-            <p class="formula">Scripted: 1 unit per 1,600 minutes. Autonomous: 1 unit per 250 minutes.</p>
+            <p class="formula">Metered in minutes. Scripted: 1 Unit = 1,600 Minutes. Autonomous: 1 Unit = 250 Minutes.</p>
           </article>
           <article class="panel result-card" id="agentBifurcationCard">
             <div class="panel-heading"><p class="eyebrow">AI Agent bifurcation</p><h2>Scripted vs Autonomous</h2></div>
             <dl>
-              <div><dt>Scripted AI Agent total</dt><dd><span id="agentScriptedTotalUnits">0</span> units</dd></div>
-              <div><dt>Autonomous AI Agent total</dt><dd><span id="agentAutonomousTotalUnits">0</span> units</dd></div>
+              <div><dt>Scripted AI Agent total</dt><dd><span id="agentScriptedTotalUnits">0</span> Units</dd></div>
+              <div><dt>Autonomous AI Agent total</dt><dd><span id="agentAutonomousTotalUnits">0</span> Units</dd></div>
               <div><dt>Scripted share</dt><dd id="agentScriptedShare">0%</dd></div>
               <div><dt>Autonomous share</dt><dd id="agentAutonomousShare">0%</dd></div>
             </dl>
@@ -420,14 +412,14 @@
 
         <!-- Contacts bar chart -->
         <article class="panel breakdown">
-          <div class="panel-heading"><p class="eyebrow">Outcome volume</p><h2>Contacts Routed by AI</h2></div>
+          <div class="panel-heading"><p class="eyebrow">Outcome volume</p><h2>Contacts Completed by AI</h2></div>
           <p class="results-intro" style="margin-top:4px">AI-handled contacts: <strong id="aiHandledContacts">0</strong></p>
           <div class="bars">
-            <div class="bar-row" data-channel="voice"><span>Voice calls contained by AI Agent</span><div class="bar-track"><div id="voiceContainedBar" class="bar-fill"></div></div><strong id="voiceContainedCalls">0</strong></div>
-            <div class="bar-row" data-channel="digital"><span>Digital clients deflected by AI Agent</span><div class="bar-track"><div id="digitalDeflectedBar" class="bar-fill accent"></div></div><strong id="digitalDeflectedClients">0</strong></div>
-            <div class="bar-row" data-channel="outbound"><span>Voice outbound contacts handled by AI Agent</span><div class="bar-track"><div id="outboundHandledBar" class="bar-fill outbound"></div></div><strong id="outboundHandledContacts">0</strong></div>
+            <div class="bar-row" data-channel="voice"><span>Voice calls completed by AI Agent</span><div class="bar-track"><div id="voiceContainedBar" class="bar-fill"></div></div><strong id="voiceContainedCalls">0</strong></div>
+            <div class="bar-row" data-channel="digital"><span>Digital interactions completed by AI Agent</span><div class="bar-track"><div id="digitalDeflectedBar" class="bar-fill accent"></div></div><strong id="digitalDeflectedClients">0</strong></div>
+            <div class="bar-row" data-channel="outbound"><span>Voice outbound contacts completed by AI Agent</span><div class="bar-track"><div id="outboundHandledBar" class="bar-fill outbound"></div></div><strong id="outboundHandledContacts">0</strong></div>
             <div class="bar-row" data-channel="voice"><span>Voice calls assisted by AI Assistant</span><div class="bar-track"><div id="assistantVoiceBar" class="bar-fill muted"></div></div><strong id="assistantVoiceCalls">0</strong></div>
-            <div class="bar-row" data-channel="digital"><span>Digital clients assisted by AI Assistant</span><div class="bar-track"><div id="assistantDigitalBar" class="bar-fill neutral"></div></div><strong id="assistantDigitalClients">0</strong></div>
+            <div class="bar-row" data-channel="digital"><span>Digital interactions assisted by AI Assistant</span><div class="bar-track"><div id="assistantDigitalBar" class="bar-fill neutral"></div></div><strong id="assistantDigitalClients">0</strong></div>
           </div>
         </article>
 
@@ -439,9 +431,9 @@
         <!-- Metered consumption -->
         <article class="panel recommendation">
           <div class="panel-heading"><p class="eyebrow">Unit details</p><h2>Metered Consumption</h2></div>
-          <p>This view shows quantity only. Commercial and business-case conversion stay outside this unit calculator.</p>
+          <p>This view shows unit metering only. Commercial and business-case conversion stay outside this calculator.</p>
           <dl>
-            <div data-channel="voice"><dt>AI Agent voice minutes</dt><dd id="agentVoiceMinutes">0</dd></div>
+            <div data-channel="voice"><dt>AI Agent routed voice minutes</dt><dd id="agentVoiceMinutes">0</dd></div>
             <div data-channel="digital"><dt>AI Agent digital sessions</dt><dd id="agentDigitalSessions">0</dd></div>
             <div data-channel="outbound"><dt>AI Agent voice outbound minutes</dt><dd id="agentOutboundMinutes">0</dd></div>
             <div data-channel="voice"><dt>AI Assistant voice minutes</dt><dd id="assistantVoiceMinutes">0</dd></div>
@@ -449,7 +441,7 @@
             <div data-assistant-channel="voice"><dt>AI QM voice minutes</dt><dd id="qmVoiceEvaluations">0</dd></div>
             <div data-assistant-channel="digital"><dt>AI QM digital sessions</dt><dd id="qmDigitalEvaluations">0</dd></div>
           </dl>
-          <p class="formula">Digital sessions use 10 messages per client. AI Assistant &amp; AI QM: 1 unit per 1,500 voice minutes or 1,000 digital sessions. Bundle (single workload): 1 unit per 2,500 voice minutes or 1,600 digital sessions. All quantities rounded up.</p>
+          <p class="formula">Voice is metered in minutes. AI Agent scripted voice uses 1 Unit = 1,600 Minutes. AI Agent autonomous voice uses 1 Unit = 250 Minutes. AI Assistant and AI QM each use 1 Unit = 1,500 Minutes, or 1,000 digital sessions. All Units are rounded up.</p>
         </article>
 
         <!-- Next step CTA -->
@@ -488,8 +480,8 @@
           <article class="panel vertical-panel">
             <div class="panel-heading"><p class="eyebrow">Industry vertical alignment</p><h2 id="verticalTitle">Financial services operating guide</h2></div>
             <div class="vertical-grid">
-              <div data-channel="voice"><dt>Suggested voice containment</dt><dd id="verticalVoiceContainment">58%</dd></div>
-              <div data-channel="digital"><dt>Suggested digital deflection</dt><dd id="verticalDigitalDeflection">48%</dd></div>
+              <div data-channel="voice"><dt>Suggested voice completion</dt><dd id="verticalVoiceContainment">58%</dd></div>
+              <div data-channel="digital"><dt>Suggested digital completion</dt><dd id="verticalDigitalDeflection">48%</dd></div>
               <div data-channel="outbound"><dt>Suggested voice outbound handled</dt><dd id="verticalOutboundHandled">45%</dd></div>
             </div>
             <p id="verticalGuidance" class="formula">Start with balance checks, card support, branch/service hours, status requests, and secure handoff intents.</p>
