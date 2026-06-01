@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ROI Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar no-print">
+    <a class="brand" href="../index.html" aria-label="WxCC Demo home">
+      <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="" />
+      <span>WxCC Demo</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../index.html">Home</a>
+      <a href="../AI Resources Calculator/index.html">AI Resource Calculator</a>
+      <a href="../ROI Calculator/index.html" aria-current="page">ROI Calculator</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero no-print">
+      <div class="hero-copy">
+        <p class="eyebrow">Webex AI business case</p>
+        <div class="hero-title">
+          <h1>ROI Calculator</h1>
+          <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="Webex" />
+        </div>
+        <p class="intro">
+          Combine the AI Resource Calculator unit estimate with workforce, contact volume, performance, and pricing inputs to estimate payback, net monthly impact, and ROI.
+        </p>
+      </div>
+    </section>
+
+    <section class="calculator-section no-print">
+      <form class="calc-form" id="roiForm">
+        <div class="calc-group source-card">
+          <div class="calc-group-header">
+            <p class="eyebrow">Step 1 handoff</p>
+            <h2>AI Resource Calculator Details</h2>
+          </div>
+          <div class="calc-group-body resource-grid">
+            <article>
+              <span>Total units</span>
+              <strong id="resourceTotalUnits">0</strong>
+            </article>
+            <article>
+              <span>AI Agent units</span>
+              <strong id="resourceAgentUnits">0</strong>
+            </article>
+            <article>
+              <span>AI Assistant units</span>
+              <strong id="resourceAssistantUnits">0</strong>
+            </article>
+            <article>
+              <span>AI QM units</span>
+              <strong id="resourceQmUnits">0</strong>
+            </article>
+          </div>
+          <div class="handoff-row">
+            <p id="handoffStatus">No saved AI Resource estimate found. Enter unit values below or open Step 1 first.</p>
+            <a href="../AI Resources Calculator/index.html">Open AI Resource Calculator</a>
+          </div>
+        </div>
+
+        <div class="calc-group">
+          <div class="calc-group-header">
+            <p class="eyebrow">Status quo</p>
+            <h2>Workforce Baselines</h2>
+          </div>
+          <div class="calc-group-body grid-3">
+            <label>
+              <span>Total number of agents</span>
+              <div class="dual-control">
+                <input id="totalAgentsSlider" type="range" min="1" max="10000" step="1" value="200" data-sync-target="totalAgents" />
+                <div class="with-unit value-volume"><input id="totalAgents" type="number" min="1" step="1" value="200" data-sync-target="totalAgentsSlider" /><span>FTE</span></div>
+              </div>
+              <small>Use productive FTEs supporting the selected queues.</small>
+            </label>
+            <label>
+              <span>Agent loaded cost</span>
+              <div class="dual-control">
+                <input id="agentLoadedCostSlider" type="range" min="10000" max="250000" step="1000" value="36000" data-sync-target="agentLoadedCost" />
+                <div class="with-unit value-money"><span>$</span><input id="agentLoadedCost" type="number" min="0" step="1000" value="36000" data-sync-target="agentLoadedCostSlider" /></div>
+              </div>
+              <small>Annual fully loaded salary, benefits, taxes, and occupancy.</small>
+            </label>
+            <label>
+              <span>Annual agent turnover rate</span>
+              <div class="dual-control">
+                <input id="turnoverRateSlider" type="range" min="0" max="100" step="1" value="35" data-sync-target="turnoverRate" />
+                <div class="with-unit value-percent"><input id="turnoverRate" type="number" min="0" max="100" step="1" value="35" data-sync-target="turnoverRateSlider" /><span>%</span></div>
+              </div>
+              <small>Annual attrition across the in-scope contact center workforce.</small>
+            </label>
+            <label>
+              <span>Cost to hire and train</span>
+              <div class="dual-control">
+                <input id="hireTrainCostSlider" type="range" min="0" max="100000" step="500" value="9200" data-sync-target="hireTrainCost" />
+                <div class="with-unit value-money"><span>$</span><input id="hireTrainCost" type="number" min="0" step="500" value="9200" data-sync-target="hireTrainCostSlider" /></div>
+              </div>
+              <small>Recruiting, training resources, supervision, and lost productivity.</small>
+            </label>
+            <label>
+              <span>Proficiency ramp time</span>
+              <div class="dual-control">
+                <input id="rampMonthsSlider" type="range" min="0" max="12" step="0.5" value="2" data-sync-target="rampMonths" />
+                <div class="with-unit value-small"><input id="rampMonths" type="number" min="0" max="12" step="0.5" value="2" data-sync-target="rampMonthsSlider" /><span>mo</span></div>
+              </div>
+              <small>Months until new hires reach full productivity.</small>
+            </label>
+            <label>
+              <span>Productivity during ramp</span>
+              <div class="dual-control">
+                <input id="rampProductivitySlider" type="range" min="0" max="100" step="5" value="50" data-sync-target="rampProductivity" />
+                <div class="with-unit value-percent"><input id="rampProductivity" type="number" min="0" max="100" step="5" value="50" data-sync-target="rampProductivitySlider" /><span>%</span></div>
+              </div>
+              <small>Typical productivity before full proficiency.</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="calc-group">
+          <div class="calc-group-header">
+            <p class="eyebrow">Inbound demand</p>
+            <h2>Call Volume & Inbound Metrics</h2>
+          </div>
+          <div class="calc-group-body grid-3">
+            <label>
+              <span>Total monthly call volume</span>
+              <div class="dual-control">
+                <input id="monthlyCallVolumeSlider" type="range" min="0" max="1000000" step="1000" value="320000" data-sync-target="monthlyCallVolume" />
+                <div class="with-unit value-volume"><input id="monthlyCallVolume" type="number" min="0" step="1000" value="320000" data-sync-target="monthlyCallVolumeSlider" /><span>calls</span></div>
+              </div>
+              <small>Inbound sessions before automation or deflection.</small>
+            </label>
+            <label>
+              <span>Average talk time</span>
+              <div class="dual-control">
+                <input id="talkTimeMinutesSlider" type="range" min="0" max="60" step="0.1" value="6" data-sync-target="talkTimeMinutes" />
+                <div class="with-unit value-small"><input id="talkTimeMinutes" type="number" min="0" step="0.1" value="6" data-sync-target="talkTimeMinutesSlider" /><span>min</span></div>
+              </div>
+              <small>Human-agent conversation time before AI Assistant impact.</small>
+            </label>
+            <label>
+              <span>Average ACW / queue time</span>
+              <div class="dual-control">
+                <input id="acwMinutesSlider" type="range" min="0" max="30" step="0.1" value="2" data-sync-target="acwMinutes" />
+                <div class="with-unit value-small"><input id="acwMinutes" type="number" min="0" step="0.1" value="2" data-sync-target="acwMinutesSlider" /><span>min</span></div>
+              </div>
+              <small>After-call work, documentation, and queue/ASA friction modeled as capacity impact.</small>
+            </label>
+            <label>
+              <span>Scripted/simple intent split</span>
+              <div class="dual-control">
+                <input id="scriptedIntentPercentSlider" type="range" min="0" max="100" step="1" value="70" data-sync-target="scriptedIntentPercent" />
+                <div class="with-unit value-percent"><input id="scriptedIntentPercent" type="number" min="0" max="100" step="1" value="70" data-sync-target="scriptedIntentPercentSlider" /><span>%</span></div>
+              </div>
+              <small>High-volume, low-complexity traffic that fits scripted automation.</small>
+            </label>
+            <label>
+              <span>Autonomous/complex intent split</span>
+              <div class="dual-control">
+                <input id="autonomousIntentPercentSlider" type="range" min="0" max="100" step="1" value="30" data-sync-target="autonomousIntentPercent" />
+                <div class="with-unit value-percent"><input id="autonomousIntentPercent" type="number" min="0" max="100" step="1" value="30" data-sync-target="autonomousIntentPercentSlider" /><span>%</span></div>
+              </div>
+              <small>Lower-volume or more flexible traffic suited to autonomous support or assisted escalation.</small>
+            </label>
+            <label>
+              <span>Working hours per agent / month</span>
+              <div class="dual-control">
+                <input id="agentMonthlyHoursSlider" type="range" min="80" max="220" step="1" value="160" data-sync-target="agentMonthlyHours" />
+                <div class="with-unit value-small"><input id="agentMonthlyHours" type="number" min="1" step="1" value="160" data-sync-target="agentMonthlyHoursSlider" /><span>hrs</span></div>
+              </div>
+              <small>Used to convert avoided handle time into equivalent FTE capacity.</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="calc-group">
+          <div class="calc-group-header">
+            <p class="eyebrow">AI performance</p>
+            <h2>Deflection & Productivity Targets</h2>
+          </div>
+          <div class="calc-group-body grid-3">
+            <label>
+              <span>Proactive digital deflection rate</span>
+              <div class="dual-control">
+                <input id="proactiveDigitalDeflectionSlider" type="range" min="0" max="100" step="1" value="20" data-sync-target="proactiveDigitalDeflection" />
+                <div class="with-unit value-percent"><input id="proactiveDigitalDeflection" type="number" min="0" max="100" step="1" value="20" data-sync-target="proactiveDigitalDeflectionSlider" /><span>%</span></div>
+              </div>
+              <small>Human interactions avoided through proactive digital messaging.</small>
+            </label>
+            <label>
+              <span>Self-service containment rate</span>
+              <div class="dual-control">
+                <input id="selfServiceContainmentSlider" type="range" min="0" max="100" step="1" value="30" data-sync-target="selfServiceContainment" />
+                <div class="with-unit value-percent"><input id="selfServiceContainment" type="number" min="0" max="100" step="1" value="30" data-sync-target="selfServiceContainmentSlider" /><span>%</span></div>
+              </div>
+              <small>Calls fully handled by AI Agent without human transfer.</small>
+            </label>
+            <label>
+              <span>Agent handle-time reduction</span>
+              <div class="dual-control">
+                <input id="ahtReductionSlider" type="range" min="0" max="60" step="1" value="5" data-sync-target="ahtReduction" />
+                <div class="with-unit value-percent"><input id="ahtReduction" type="number" min="0" max="60" step="1" value="5" data-sync-target="ahtReductionSlider" /><span>%</span></div>
+              </div>
+              <small>Expected reduction for remaining human-handled interactions with AI Assistant.</small>
+            </label>
+            <label>
+              <span>Turnover reduction target</span>
+              <div class="dual-control">
+                <input id="turnoverReductionSlider" type="range" min="0" max="50" step="1" value="8" data-sync-target="turnoverReduction" />
+                <div class="with-unit value-percent"><input id="turnoverReduction" type="number" min="0" max="50" step="1" value="8" data-sync-target="turnoverReductionSlider" /><span>%</span></div>
+              </div>
+              <small>Expected relative reduction in attrition from better agent experience.</small>
+            </label>
+            <label>
+              <span>AI Assistant coverage</span>
+              <div class="dual-control">
+                <input id="assistantCoverageSlider" type="range" min="0" max="100" step="1" value="90" data-sync-target="assistantCoverage" />
+                <div class="with-unit value-percent"><input id="assistantCoverage" type="number" min="0" max="100" step="1" value="90" data-sync-target="assistantCoverageSlider" /><span>%</span></div>
+              </div>
+              <small>Percentage of remaining human-handled interactions supported by AI Assistant.</small>
+            </label>
+            <label>
+              <span>Benefit realization factor</span>
+              <div class="dual-control">
+                <input id="realizationFactorSlider" type="range" min="0" max="100" step="5" value="75" data-sync-target="realizationFactor" />
+                <div class="with-unit value-percent"><input id="realizationFactor" type="number" min="0" max="100" step="5" value="75" data-sync-target="realizationFactorSlider" /><span>%</span></div>
+              </div>
+              <small>Conservative factor for adoption, queue mix, seasonality, and operational leakage.</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="calc-group">
+          <div class="calc-group-header">
+            <p class="eyebrow">Commercial model</p>
+            <h2>Vendor Solution & Pricing Inputs</h2>
+          </div>
+          <div class="calc-group-body grid-3">
+            <label>
+              <span>Pricing tier selection</span>
+              <select id="pricingTier">
+                <option value="retail">Retail unit rate</option>
+                <option value="volume">Volume-discounted bundle</option>
+              </select>
+              <small>Switch between visible retail rates and planning discount assumptions.</small>
+            </label>
+            <label>
+              <span>AI Agent unit rate</span>
+              <div class="dual-control">
+                <input id="agentUnitRateSlider" type="range" min="0" max="500" step="5" value="100" data-sync-target="agentUnitRate" />
+                <div class="with-unit value-money"><span>$</span><input id="agentUnitRate" type="number" min="0" step="5" value="100" data-sync-target="agentUnitRateSlider" /></div>
+              </div>
+              <small>Monthly rate per AI Agent unit.</small>
+            </label>
+            <label>
+              <span>AI Assistant unit rate</span>
+              <div class="dual-control">
+                <input id="assistantUnitRateSlider" type="range" min="0" max="300" step="5" value="30" data-sync-target="assistantUnitRate" />
+                <div class="with-unit value-money"><span>$</span><input id="assistantUnitRate" type="number" min="0" step="5" value="30" data-sync-target="assistantUnitRateSlider" /></div>
+              </div>
+              <small>Monthly rate per AI Assistant unit.</small>
+            </label>
+            <label>
+              <span>AI QM unit rate</span>
+              <div class="dual-control">
+                <input id="qmUnitRateSlider" type="range" min="0" max="300" step="5" value="30" data-sync-target="qmUnitRate" />
+                <div class="with-unit value-money"><span>$</span><input id="qmUnitRate" type="number" min="0" step="5" value="30" data-sync-target="qmUnitRateSlider" /></div>
+              </div>
+              <small>Monthly rate per AI QM unit when included in scope.</small>
+            </label>
+            <label>
+              <span>One-time professional services</span>
+              <div class="dual-control">
+                <input id="professionalServicesSlider" type="range" min="0" max="2000000" step="10000" value="300000" data-sync-target="professionalServices" />
+                <div class="with-unit value-money wide"><span>$</span><input id="professionalServices" type="number" min="0" step="10000" value="300000" data-sync-target="professionalServicesSlider" /></div>
+              </div>
+              <small>Development, integration, data readiness, prompt tuning, testing, and launch support.</small>
+            </label>
+            <label>
+              <span>Use AI Resource units</span>
+              <select id="unitSource">
+                <option value="saved">Use saved Step 1 values</option>
+                <option value="manual">Manual unit entry</option>
+              </select>
+              <small>Choose manual if sizing was completed outside this site.</small>
+            </label>
+          </div>
+          <div class="calc-sub-group">
+            <p class="sub-group-label">Manual unit override</p>
+            <div class="calc-group-body grid-3 compact">
+              <label>
+                <span>AI Agent units</span>
+                <input id="manualAgentUnits" type="number" min="0" step="1" value="165" />
+              </label>
+              <label>
+                <span>AI Assistant units</span>
+                <input id="manualAssistantUnits" type="number" min="0" step="1" value="94" />
+              </label>
+              <label>
+                <span>AI QM units</span>
+                <input id="manualQmUnits" type="number" min="0" step="1" value="46" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="reset" class="reset-button">Reset to defaults</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="results-section" id="resultsSection" aria-label="ROI results">
+      <div class="results-container">
+        <div class="print-only report-print-header">
+          <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="Webex" class="report-logo" />
+          <div>
+            <h1>Webex AI ROI Estimate</h1>
+            <p id="reportMeta"></p>
+          </div>
+        </div>
+
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Output</p>
+            <h2>Business Case Results</h2>
+            <p class="results-intro">Results update automatically as assumptions change.</p>
+          </div>
+          <div class="button-row no-print">
+            <button type="button" id="downloadReportButton" class="download-btn">Download complete report</button>
+            <button type="button" id="printReportButton" class="download-btn secondary">Print / PDF</button>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <article class="metric primary">
+            <span>ROI</span>
+            <strong id="roiPercent">0%</strong>
+          </article>
+          <article class="metric">
+            <span>Payback period</span>
+            <strong id="paybackMonths">0 mo</strong>
+          </article>
+          <article class="metric">
+            <span>Net monthly impact</span>
+            <strong id="netMonthlyImpact">$0</strong>
+          </article>
+          <article class="metric">
+            <span>Annual net benefit</span>
+            <strong id="annualNetBenefit">$0</strong>
+          </article>
+        </div>
+
+        <div class="result-grid">
+          <article class="panel result-card">
+            <div class="panel-heading"><p class="eyebrow">Savings</p><h2>Monthly Benefit</h2></div>
+            <dl>
+              <div><dt>Deflection and containment</dt><dd id="monthlyDeflectionSavings">$0</dd></div>
+              <div><dt>AI Assistant AHT reduction</dt><dd id="monthlyAhtSavings">$0</dd></div>
+              <div><dt>Turnover and ramp impact</dt><dd id="monthlyWorkforceSavings">$0</dd></div>
+              <div><dt>Total gross benefit</dt><dd id="grossMonthlyBenefit">$0</dd></div>
+            </dl>
+          </article>
+
+          <article class="panel result-card">
+            <div class="panel-heading"><p class="eyebrow">Investment</p><h2>Monthly Cost</h2></div>
+            <dl>
+              <div><dt>AI Agent licensing</dt><dd id="agentLicenseCost">$0</dd></div>
+              <div><dt>AI Assistant licensing</dt><dd id="assistantLicenseCost">$0</dd></div>
+              <div><dt>AI QM licensing</dt><dd id="qmLicenseCost">$0</dd></div>
+              <div><dt>Total monthly license</dt><dd id="monthlyLicenseCost">$0</dd></div>
+            </dl>
+          </article>
+
+          <article class="panel result-card">
+            <div class="panel-heading"><p class="eyebrow">Capacity</p><h2>Operational Impact</h2></div>
+            <dl>
+              <div><dt>Monthly contacts avoided</dt><dd id="contactsAvoided">0</dd></div>
+              <div><dt>Monthly hours released</dt><dd id="hoursReleased">0</dd></div>
+              <div><dt>Equivalent FTE capacity</dt><dd id="fteReleased">0</dd></div>
+              <div><dt>Annualized gross benefit</dt><dd id="annualGrossBenefit">$0</dd></div>
+            </dl>
+          </article>
+
+          <article class="panel result-card">
+            <div class="panel-heading"><p class="eyebrow">AI Resource input</p><h2>Unit Cost Basis</h2></div>
+            <dl>
+              <div><dt>AI Agent units used</dt><dd id="agentUnitsUsed">0</dd></div>
+              <div><dt>AI Assistant units used</dt><dd id="assistantUnitsUsed">0</dd></div>
+              <div><dt>AI QM units used</dt><dd id="qmUnitsUsed">0</dd></div>
+              <div><dt>Total units used</dt><dd id="totalUnitsUsed">0</dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <article class="panel recommendation">
+          <div class="panel-heading"><p class="eyebrow">Executive summary</p><h2 id="summaryTitle">ROI model summary</h2></div>
+          <p id="summaryText"></p>
+          <div class="advisor-grid">
+            <div>
+              <h3>Primary value levers</h3>
+              <ul id="valueLeverList"></ul>
+            </div>
+            <div>
+              <h3>Next best actions</h3>
+              <ul id="nextActionList"></ul>
+            </div>
+          </div>
+        </article>
+
+        <div class="disclaimer">
+          <div class="disclaimer-icon" aria-hidden="true">i</div>
+          <p><strong>Estimates only.</strong> This ROI calculator is a planning model, not a commercial offer, quote, contract, or financial guarantee. Outputs depend on the assumptions entered by the user, including contact volumes, wage rates, automation performance, adoption, operational leakage, unit pricing, and implementation scope. Actual results may vary materially based on deployment design, integrations, customer behavior, governance, change management, and usage patterns. Validate current Cisco/Webex pricing, entitlement rules, product availability, professional services scope, and legal/compliance requirements with the appropriate Cisco team or authorized partner before making purchasing or investment decisions.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
