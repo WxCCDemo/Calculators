@@ -68,7 +68,9 @@ const outputs = {
   derivedAhtReduction: document.getElementById("derivedAhtReduction"),
   derivedAcwReduction: document.getElementById("derivedAcwReduction"),
   derivedFcrImprovement: document.getElementById("derivedFcrImprovement"),
+  derivedAbandonReduction: document.getElementById("derivedAbandonReduction"),
   derivedRealizationFactor: document.getElementById("derivedRealizationFactor"),
+  benefitLogicText: document.getElementById("benefitLogicText"),
   handoffStatus: document.getElementById("handoffStatus"),
   roiPercent: document.getElementById("roiPercent"),
   paybackMonths: document.getElementById("paybackMonths"),
@@ -77,6 +79,7 @@ const outputs = {
   monthlyDeflectionSavings: document.getElementById("monthlyDeflectionSavings"),
   monthlyAhtSavings: document.getElementById("monthlyAhtSavings"),
   monthlyFcrSavings: document.getElementById("monthlyFcrSavings"),
+  monthlyAbandonSavings: document.getElementById("monthlyAbandonSavings"),
   monthlyWorkforceSavings: document.getElementById("monthlyWorkforceSavings"),
   grossMonthlyBenefit: document.getElementById("grossMonthlyBenefit"),
   agentLicenseCost: document.getElementById("agentLicenseCost"),
@@ -86,6 +89,8 @@ const outputs = {
   contactsAvoided: document.getElementById("contactsAvoided"),
   hoursReleased: document.getElementById("hoursReleased"),
   fteReleased: document.getElementById("fteReleased"),
+  humanAgentsRequired: document.getElementById("humanAgentsRequired"),
+  humanAgentsRepurposed: document.getElementById("humanAgentsRepurposed"),
   annualGrossBenefit: document.getElementById("annualGrossBenefit"),
   agentUnitsUsed: document.getElementById("agentUnitsUsed"),
   assistantUnitsUsed: document.getElementById("assistantUnitsUsed"),
@@ -264,10 +269,13 @@ function derivedBenefitAssumptions(units, carry) {
   const hasAgent = units.agent > 0;
   const completionValues = [carry.voiceCompletion, carry.digitalCompletion].filter((value) => value !== null);
   const completion = completionValues.length ? Math.max(...completionValues) / 100 : 0;
+  const assistantLift = hasAssistant ? 1 : 0;
+  const qmLift = hasQm ? 1 : 0;
   return {
-    ahtReduction: hasAssistant ? 0.10 : 0,
-    acwReduction: hasAssistant ? 0.20 : 0,
-    fcrImprovement: hasQm ? 0.05 : hasAssistant ? 0.03 : 0,
+    ahtReduction: Math.min(0.15, (assistantLift * 0.08) + (qmLift * 0.02)),
+    acwReduction: Math.min(0.25, (assistantLift * 0.15) + (qmLift * 0.05)),
+    fcrImprovement: Math.min(0.08, (assistantLift * 0.02) + (qmLift * 0.03) + (completion * 0.02)),
+    abandonReduction: Math.min(0.20, (completion * 0.12) + (assistantLift * 0.02)),
     realization: hasAgent || hasAssistant || hasQm ? Math.min(0.85, 0.60 + (completion * 0.25)) : 0
   };
 }
@@ -318,11 +326,14 @@ function updateCalculator() {
   const acwMinutesSaved = assistedContacts * acwMinutes * derived.acwReduction * realization;
   const fcrContactsAvoided = monthlyCallVolume * derived.fcrImprovement * realization;
   const fcrSavings = fcrContactsAvoided * costPerContact;
+  const baselineAbandonedContacts = monthlyCallVolume * 0.05;
+  const abandonedCallsRecovered = baselineAbandonedContacts * derived.abandonReduction * realization;
+  const abandonedSavings = abandonedCallsRecovered * costPerContact * 0.5;
   const ahtSavings = ((ahtMinutesSaved + acwMinutesSaved) / 60) * (monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours")));
 
   const workforceSavings = 0;
 
-  const grossMonthlyBenefit = deflectionSavings + ahtSavings + fcrSavings + workforceSavings;
+  const grossMonthlyBenefit = deflectionSavings + ahtSavings + fcrSavings + abandonedSavings + workforceSavings;
   const agentLicenseCost = units.agent * positive("agentUnitRate");
   const assistantLicenseCost = units.assistant * positive("assistantUnitRate");
   const qmLicenseCost = units.qm * positive("qmUnitRate");
@@ -335,6 +346,8 @@ function updateCalculator() {
   const paybackMonths = netMonthlyImpact > 0 ? positive("professionalServices") / netMonthlyImpact : 0;
   const hoursReleased = (contactsAvoided * handleMinutes + ahtMinutesSaved + acwMinutesSaved) / 60;
   const fteReleased = hoursReleased / Math.max(1, positive("agentMonthlyHours"));
+  const humanAgentsRepurposed = Math.min(totalAgents, fteReleased);
+  const humanAgentsRequired = Math.max(0, totalAgents - humanAgentsRepurposed);
 
   outputs.roiPercent.textContent = `${numberFormat.format(roi)}%`;
   outputs.paybackMonths.textContent = netMonthlyImpact > 0 ? `${numberFormat.format(paybackMonths)} mo` : "No payback";
@@ -343,6 +356,7 @@ function updateCalculator() {
   outputs.monthlyDeflectionSavings.textContent = money(deflectionSavings);
   outputs.monthlyAhtSavings.textContent = money(ahtSavings);
   outputs.monthlyFcrSavings.textContent = money(fcrSavings);
+  outputs.monthlyAbandonSavings.textContent = money(abandonedSavings);
   if (outputs.monthlyWorkforceSavings) outputs.monthlyWorkforceSavings.textContent = money(workforceSavings);
   outputs.grossMonthlyBenefit.textContent = money(grossMonthlyBenefit);
   outputs.agentLicenseCost.textContent = money(agentLicenseCost);
@@ -351,8 +365,10 @@ function updateCalculator() {
   outputs.monthlyLicenseCost.textContent = money(monthlyLicenseCost);
   outputs.contactsAvoided.textContent = numberFormat.format(contactsAvoided);
   outputs.hoursReleased.textContent = numberFormat.format(hoursReleased);
-  outputs.fteReleased.textContent = numberFormat.format(fteReleased);
-  outputs.annualGrossBenefit.textContent = money(annualGrossBenefit);
+  if (outputs.fteReleased) outputs.fteReleased.textContent = numberFormat.format(fteReleased);
+  outputs.humanAgentsRequired.textContent = numberFormat.format(humanAgentsRequired);
+  outputs.humanAgentsRepurposed.textContent = numberFormat.format(humanAgentsRepurposed);
+  if (outputs.annualGrossBenefit) outputs.annualGrossBenefit.textContent = money(annualGrossBenefit);
   outputs.agentUnitsUsed.textContent = numberFormat.format(units.agent);
   outputs.assistantUnitsUsed.textContent = numberFormat.format(units.assistant);
   outputs.qmUnitsUsed.textContent = numberFormat.format(units.qm);
@@ -360,14 +376,18 @@ function updateCalculator() {
   outputs.derivedAhtReduction.textContent = `${numberFormat.format(derived.ahtReduction * 100)}%`;
   outputs.derivedAcwReduction.textContent = `${numberFormat.format(derived.acwReduction * 100)}%`;
   outputs.derivedFcrImprovement.textContent = `${numberFormat.format(derived.fcrImprovement * 100)}%`;
+  outputs.derivedAbandonReduction.textContent = `${numberFormat.format(derived.abandonReduction * 100)}%`;
   outputs.derivedRealizationFactor.textContent = `${numberFormat.format(derived.realization * 100)}%`;
+  outputs.benefitLogicText.textContent =
+    `Logic: AI Assistant drives AHT and ACW reduction; AI QM adds FCR improvement through scoring, sentiment, coaching, and quality feedback; AI Agent completion reduces repeat demand and abandoned-call risk. Repurposed agents are capacity released by avoided contacts and shorter assisted interactions, not an assumed headcount reduction.`;
 
   outputs.summaryTitle.textContent = "ROI model summary";
   outputs.summaryText.textContent =
-    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, and fewer contacts reaching agents. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact. Payback shows “No payback” when net monthly impact is negative.`;
+    `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, lower abandoned-call risk, and fewer contacts reaching agents. The model shows ${numberFormat.format(humanAgentsRequired)} human agents still required and ${numberFormat.format(humanAgentsRepurposed)} agents of equivalent capacity available to repurpose, not an assumed headcount reduction. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, and ${money(netMonthlyImpact)} net monthly impact. Payback shows “No payback” when net monthly impact is negative.`;
   setList(outputs.valueLeverList, [
     `FCR improvement reduces repeat demand by about ${numberFormat.format(fcrContactsAvoided)} contacts per month.`,
     `AHT and ACW improvements release about ${numberFormat.format((ahtMinutesSaved + acwMinutesSaved) / 60)} agent hours per month.`,
+    `Abandoned-call reduction recovers about ${numberFormat.format(abandonedCallsRecovered)} contacts per month in this model.`,
     "AI Agent completion reduces contacts reaching human agents while preserving separate scripted and autonomous quantities."
   ]);
   setList(outputs.nextActionList, [
