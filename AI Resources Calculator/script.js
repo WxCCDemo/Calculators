@@ -789,7 +789,22 @@ function updateCalculator() {
       assistantUnits,
       qmUnits,
       agentScriptedTotalUnits,
-      agentAutonomousTotalUnits
+      agentAutonomousTotalUnits,
+      agentVoiceScriptedUnits,
+      agentVoiceAutonomousUnits,
+      agentDigitalScriptedUnits,
+      agentDigitalAutonomousUnits,
+      agentOutboundScriptedUnits,
+      agentOutboundAutonomousUnits
+    },
+    metering: {
+      agentVoiceMinutes: agentVoiceMin,
+      agentDigitalSessions: agentDigSess,
+      agentOutboundMinutes: agentObMin,
+      assistantVoiceMinutes: assistantVoiceSeconds / 60,
+      assistantDigitalSessions: assistantDigSessions,
+      qmVoiceMinutes: qmVoiceSeconds / 60,
+      qmDigitalSessions: qmDigSessions
     },
     assumptions: {
       monthlyVoiceCalls,

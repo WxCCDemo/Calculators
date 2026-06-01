@@ -9,7 +9,7 @@
 <body>
   <header class="topbar no-print">
     <a class="brand" href="../index.html" aria-label="WxCC Demo home">
-      <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="" />
+      <img src="webex-logo-transparent.png" alt="" />
       <span>WxCC Demo</span>
     </a>
     <nav aria-label="Primary navigation">
@@ -25,7 +25,7 @@
         <p class="eyebrow">Webex AI business case</p>
         <div class="hero-title">
           <h1>ROI Calculator</h1>
-          <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="Webex" />
+          <img src="webex-logo-transparent.png" alt="Webex" />
         </div>
         <p class="intro">
           Combine the AI Resource Calculator unit estimate with workforce, contact volume, performance, and pricing inputs to estimate payback, net monthly impact, and ROI.
@@ -42,21 +42,50 @@
           </div>
           <div class="calc-group-body resource-grid">
             <article>
-              <span>Total units</span>
-              <strong id="resourceTotalUnits">0</strong>
-            </article>
-            <article>
-              <span>AI Agent units</span>
+              <span>Webex AI Agent Unit(s)</span>
               <strong id="resourceAgentUnits">0</strong>
             </article>
             <article>
-              <span>AI Assistant units</span>
+              <span>Webex AI Assistant Unit(s)</span>
               <strong id="resourceAssistantUnits">0</strong>
             </article>
             <article>
-              <span>AI QM units</span>
+              <span>Webex AI QM Unit(s)</span>
               <strong id="resourceQmUnits">0</strong>
             </article>
+          </div>
+          <div class="calc-sub-group">
+            <p class="sub-group-label">Metered consumption from AI Resource Calculator</p>
+            <div class="calc-group-body resource-grid compact">
+              <article>
+                <span>AI Agent voice minutes</span>
+                <strong id="resourceAgentVoiceMinutes">0</strong>
+              </article>
+              <article>
+                <span>AI Agent digital sessions</span>
+                <strong id="resourceAgentDigitalSessions">0</strong>
+              </article>
+              <article>
+                <span>AI Agent outbound minutes</span>
+                <strong id="resourceAgentOutboundMinutes">0</strong>
+              </article>
+              <article>
+                <span>AI Assistant voice minutes</span>
+                <strong id="resourceAssistantVoiceMinutes">0</strong>
+              </article>
+              <article>
+                <span>AI Assistant digital sessions</span>
+                <strong id="resourceAssistantDigitalSessions">0</strong>
+              </article>
+              <article>
+                <span>AI QM voice minutes</span>
+                <strong id="resourceQmVoiceMinutes">0</strong>
+              </article>
+              <article>
+                <span>AI QM digital sessions</span>
+                <strong id="resourceQmDigitalSessions">0</strong>
+              </article>
+            </div>
           </div>
           <div class="handoff-row">
             <p id="handoffStatus">No saved AI Resource estimate found. Enter unit values below or open Step 1 first.</p>
@@ -71,10 +100,10 @@
           </div>
           <div class="calc-group-body grid-3">
             <label>
-              <span>Total number of agents</span>
+              <span>Number of human agents</span>
               <div class="dual-control">
                 <input id="totalAgentsSlider" type="range" min="1" max="10000" step="1" value="200" data-sync-target="totalAgents" />
-                <div class="with-unit value-volume"><input id="totalAgents" type="number" min="1" step="1" value="200" data-sync-target="totalAgentsSlider" /><span>FTE</span></div>
+                <div class="with-unit value-volume"><input id="totalAgents" type="number" min="1" step="1" value="200" data-sync-target="totalAgentsSlider" /><span>agents</span></div>
               </div>
               <small>Use productive FTEs supporting the selected queues.</small>
             </label>
@@ -294,15 +323,15 @@
             <p class="sub-group-label">Manual unit override</p>
             <div class="calc-group-body grid-3 compact">
               <label>
-                <span>AI Agent units</span>
+                <span>Webex AI Agent Unit(s)</span>
                 <input id="manualAgentUnits" type="number" min="0" step="1" value="165" />
               </label>
               <label>
-                <span>AI Assistant units</span>
+                <span>Webex AI Assistant Unit(s)</span>
                 <input id="manualAssistantUnits" type="number" min="0" step="1" value="94" />
               </label>
               <label>
-                <span>AI QM units</span>
+                <span>Webex AI QM Unit(s)</span>
                 <input id="manualQmUnits" type="number" min="0" step="1" value="46" />
               </label>
             </div>
@@ -318,7 +347,7 @@
     <section class="results-section" id="resultsSection" aria-label="ROI results">
       <div class="results-container">
         <div class="print-only report-print-header">
-          <img src="https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png" alt="Webex" class="report-logo" />
+          <img src="webex-logo-transparent.png" alt="Webex" class="report-logo" />
           <div>
             <h1>Webex AI ROI Estimate</h1>
             <p id="reportMeta"></p>
@@ -390,10 +419,10 @@
           <article class="panel result-card">
             <div class="panel-heading"><p class="eyebrow">AI Resource input</p><h2>Unit Cost Basis</h2></div>
             <dl>
-              <div><dt>AI Agent units used</dt><dd id="agentUnitsUsed">0</dd></div>
-              <div><dt>AI Assistant units used</dt><dd id="assistantUnitsUsed">0</dd></div>
-              <div><dt>AI QM units used</dt><dd id="qmUnitsUsed">0</dd></div>
-              <div><dt>Total units used</dt><dd id="totalUnitsUsed">0</dd></div>
+              <div><dt>Webex AI Agent Unit(s)</dt><dd id="agentUnitsUsed">0</dd></div>
+              <div><dt>Webex AI Assistant Unit(s)</dt><dd id="assistantUnitsUsed">0</dd></div>
+              <div><dt>Webex AI QM Unit(s)</dt><dd id="qmUnitsUsed">0</dd></div>
+              <div><dt>Product unit note</dt><dd id="unitBasisNote">Separate products</dd></div>
             </dl>
           </article>
         </div>
