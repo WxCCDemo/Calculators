@@ -1,4 +1,5 @@
-const LOGO = "https://raw.githubusercontent.com/WxCCDemo/MyWxCCDemo/main/assets/webex-logo.png";
+const LOGO = "../../assets/webex-logo-transparent.png";
+const STORAGE_KEY = "webexAiResourceEstimate";
 
 const industryProfiles = {
   financial: {
@@ -276,6 +277,8 @@ const outputs = {
   assistantDigitalSessions: document.getElementById("assistantDigitalSessions"),
   qmVoiceEvaluations: document.getElementById("qmVoiceEvaluations"),
   qmDigitalEvaluations: document.getElementById("qmDigitalEvaluations"),
+  resultWhyTitle: document.getElementById("resultWhyTitle"),
+  resultWhyText: document.getElementById("resultWhyText"),
   voiceContainedBar: document.getElementById("voiceContainedBar"),
   digitalDeflectedBar: document.getElementById("digitalDeflectedBar"),
   outboundHandledBar: document.getElementById("outboundHandledBar"),
@@ -352,6 +355,7 @@ function positive(id) { return Math.max(0, value(id)); }
 function percent(id)  { return Math.min(Math.max(value(id), 0), 100) / 100; }
 
 function channelEnabled(channel) {
+  if (inputs.agentMode.value === "none") return false;
   const input = inputs[`channel${channel[0].toUpperCase()}${channel.slice(1)}`];
   return input ? input.checked : false;
 }
@@ -365,6 +369,11 @@ function activeChannelLabels() {
 }
 
 function updateChannelVisibility() {
+  const agentDisabled = inputs.agentMode.value === "none";
+  ["Voice", "Digital", "Outbound"].forEach((channel) => {
+    const input = inputs[`channel${channel}`];
+    if (input) input.disabled = agentDisabled;
+  });
   ["voice", "digital", "outbound"].forEach((channel) => {
     const on = channelEnabled(channel);
     document.querySelectorAll(`[data-channel="${channel}"]`).forEach((el) => {
@@ -434,6 +443,7 @@ function applyIndustryProfile() {
 
 function getAgentRates() {
   const mode = inputs.agentMode.value;
+  if (mode === "none") return { voiceAutonomousRate: 0, digitalAutonomousRate: 0, outboundAutonomousRate: 0 };
   if (mode === "scripted")   return { voiceAutonomousRate: 0, digitalAutonomousRate: 0, outboundAutonomousRate: 0 };
   if (mode === "autonomous") return { voiceAutonomousRate: 1, digitalAutonomousRate: 1, outboundAutonomousRate: 1 };
   return {
@@ -451,6 +461,8 @@ function updateAgentModeUi() {
     outputs.agentModeRecommendation.textContent = "Scripted mode is best for deterministic journeys such as status lookup, payments, forms, and eligibility checks.";
   } else if (mode === "autonomous") {
     outputs.agentModeRecommendation.textContent = "Autonomous mode is best for natural-language troubleshooting, complex questions, and broader service navigation.";
+  } else if (mode === "none") {
+    outputs.agentModeRecommendation.textContent = "AI Agent is not in scope. Enter human-handled voice and digital volumes below to size AI Assistant and AI QM only.";
   } else {
     outputs.agentModeRecommendation.textContent = "Use the division controls to decide how much work should be autonomous versus scripted.";
   }
@@ -484,14 +496,38 @@ function updateVerticalAlignment(profile) {
   setReferenceOutcomes(profile);
 }
 
-function updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, scriptedUnits, autonomousUnits) {
+function updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, scriptedUnits, autonomousUnits) {
   const wg = getWorkforceGuidance();
   const channelText = activeChannelLabels().join(", ") || "no active AI Agent channels";
   outputs.summaryTitle.textContent = `${profile.label} use case plan`;
   outputs.summaryText.textContent  =
-    `${profile.summary} ${wg.summary} Scope: ${channelText}. Assumptions require ${numberFormat.format(totalUnits)} total units — ${numberFormat.format(agentTotalUnits)} AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} AI Assistant, and ${numberFormat.format(qmUnits)} AI QM — covering ${numberFormat.format(aiHandledContacts)} AI-handled contacts.`;
+    `${profile.summary} ${wg.summary} Scope: ${channelText}. Assumptions require ${numberFormat.format(totalUnits)} total units — ${numberFormat.format(agentTotalUnits)} AI Agent (${numberFormat.format(scriptedUnits)} scripted, ${numberFormat.format(autonomousUnits)} autonomous), ${numberFormat.format(assistantUnits)} AI Assistant, and ${numberFormat.format(qmUnits)} AI QM — covering ${numberFormat.format(aiHandledContacts)} AI-handled contacts and ${numberFormat.format(humanHandledContacts)} human-handled contacts.`;
   setList(outputs.useCaseList,    profile.useCases);
   setList(outputs.nextActionList, [...profile.nextActions, wg.action]);
+}
+
+function updateResultExplanation(metrics) {
+  const active = activeChannelLabels();
+  const lines = [];
+  if (inputs.agentMode.value === "none") {
+    lines.push("AI Agent is not required, so AI Agent units are zero. AI Assistant and AI QM are sized from the manual human-handled voice and digital volumes.");
+  }
+  if (active.includes("voice")) {
+    lines.push(`Voice: ${numberFormat.format(metrics.voiceContainedCalls)} calls are handled by AI Agent and ${numberFormat.format(metrics.voiceRemainingCalls)} calls remain for human agents.`);
+  }
+  if (active.includes("digital")) {
+    lines.push(`Digital: ${numberFormat.format(metrics.digitalDeflectedClients)} clients are handled by AI Agent and ${numberFormat.format(metrics.digitalRemainingClients)} clients remain for human agents.`);
+  }
+  if (active.includes("outbound")) {
+    lines.push(`Voice Outbound: ${numberFormat.format(metrics.outboundHandledContacts)} contacts are handled by AI Agent and ${numberFormat.format(metrics.outboundRemainingContacts)} contacts remain for human agents.`);
+  }
+  lines.push(`AI Assistant covers ${numberFormat.format(metrics.assistantVoiceCalls)} human voice interactions and ${numberFormat.format(metrics.assistantDigClients)} human digital clients based on the selected coverage percentages.`);
+  if (outputs.resultWhyTitle) {
+    outputs.resultWhyTitle.textContent = active.length === 1
+      ? `${active[0] === "outbound" ? "Voice Outbound" : active[0][0].toUpperCase() + active[0].slice(1)} result explanation`
+      : "Channel result explanation";
+  }
+  if (outputs.resultWhyText) outputs.resultWhyText.textContent = lines.join(" ");
 }
 
 function updateUseCasePrioritisation(profile) {
@@ -542,7 +578,7 @@ function updateCalculator() {
   const digitalDeflectedClients = monthlyDigitalClients * digitalDeflectionRate;
   const digitalRemainingClients = monthlyDigitalClients - digitalDeflectedClients;
 
-  const agentVoiceMin    = voiceContainedCalls * positive("aiAgentVoiceMinutes");
+  const agentVoiceMin    = monthlyVoiceCalls * positive("aiAgentVoiceMinutes");
   const agentVoiceAutoMin = agentVoiceMin * voiceAutonomousRate;
   const agentVoiceScriptMin = agentVoiceMin - agentVoiceAutoMin;
 
@@ -551,6 +587,7 @@ function updateCalculator() {
   const agentDigScriptSess = agentDigSess - agentDigAutoSess;
 
   const outboundHandledContacts = monthlyOutboundContacts * outboundHandledRate;
+  const outboundRemainingContacts = monthlyOutboundContacts - outboundHandledContacts;
   const agentObMin     = outboundHandledContacts * positive("outboundAiMinutes");
   const agentObAutoMin = agentObMin * outboundAutonomousRate;
   const agentObScriptMin = agentObMin - agentObAutoMin;
@@ -570,7 +607,7 @@ function updateCalculator() {
 
   // ── Agent volumes for AI Assistant & AI QM ─────────────────
   // When channel is off the user enters direct agent volumes for standalone AI Assist / QM mode
-  const agentVolumeVoice   = hasVoice   ? voiceRemainingCalls   : (assistantCoversVoice   ? positive("directAgentVoiceCalls")   : 0);
+  const agentVolumeVoice   = (hasVoice ? voiceRemainingCalls : (assistantCoversVoice ? positive("directAgentVoiceCalls") : 0)) + outboundRemainingContacts;
   const agentVolumeDigital = hasDigital ? digitalRemainingClients : (assistantCoversDigital ? positive("directAgentDigitalClients") : 0);
 
   // ── AI Assistant ────────────────────────────────────────────
@@ -622,6 +659,8 @@ function updateCalculator() {
     outputs.agentBifurcationNote.textContent = "Bifurcation is based on the selected division of labour between scripted and autonomous AI Agent work.";
   } else if (inputs.agentMode.value === "scripted") {
     outputs.agentBifurcationNote.textContent = "Scripted-only mode — all AI Agent units allocated to scripted automation.";
+  } else if (inputs.agentMode.value === "none") {
+    outputs.agentBifurcationNote.textContent = "AI Agent is not in scope, so scripted and autonomous AI Agent units are both zero.";
   } else {
     outputs.agentBifurcationNote.textContent = "Autonomous-only mode — all AI Agent units allocated to autonomous automation.";
   }
@@ -646,8 +685,55 @@ function updateCalculator() {
   setBar(outputs.assistantVoiceBar,   assistantVoiceCalls,     maxVol);
   setBar(outputs.assistantDigitalBar, assistantDigClients,     maxVol);
 
-  updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits);
+  const humanHandledContacts = agentVolumeVoice + agentVolumeDigital;
+  updateSummary(profile, totalUnits, agentTotalUnits, assistantUnits, qmUnits, aiHandledContacts, humanHandledContacts, agentScriptedTotalUnits, agentAutonomousTotalUnits);
   updateUseCasePrioritisation(profile);
+  updateResultExplanation({
+    voiceContainedCalls,
+    voiceRemainingCalls,
+    digitalDeflectedClients,
+    digitalRemainingClients,
+    outboundHandledContacts,
+    outboundRemainingContacts,
+    assistantVoiceCalls,
+    assistantDigClients
+  });
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    generatedAt: new Date().toISOString(),
+    profile: {
+      industryType: inputs.industryType.value,
+      industryLabel: profile.label,
+      agentMode: inputs.agentMode.value,
+      workforceModel: inputs.workforceModel.value,
+      channels: activeChannelLabels()
+    },
+    units: {
+      totalUnits,
+      agentTotalUnits,
+      assistantUnits,
+      qmUnits,
+      agentScriptedTotalUnits,
+      agentAutonomousTotalUnits
+    },
+    assumptions: {
+      monthlyVoiceCalls,
+      monthlyDigitalClients,
+      monthlyOutboundContacts,
+      directAgentVoiceCalls: positive("directAgentVoiceCalls"),
+      directAgentDigitalClients: positive("directAgentDigitalClients"),
+      voiceContainmentPercent: value("voiceContainmentPercent"),
+      digitalDeflectionPercent: value("digitalDeflectionPercent"),
+      outboundHandledPercent: value("outboundHandledPercent"),
+      assistantVoiceCoveragePercent: value("assistantVoiceCoveragePercent"),
+      assistantDigitalCoveragePercent: value("assistantDigitalCoveragePercent"),
+      qmVoiceCoveragePercent: value("qmVoiceCoveragePercent"),
+      qmDigitalCoveragePercent: value("qmDigitalCoveragePercent"),
+      humanAhtMinutes: value("humanAhtMinutes"),
+      aiHandledContacts,
+      humanHandledContacts
+    }
+  }));
 }
 
 // ── Event wiring ────────────────────────────────────────────────
