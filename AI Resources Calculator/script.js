@@ -150,7 +150,8 @@ const defaults = {
   assistantDigitalCoveragePercent: 90,
   assistantInboundMessages: 10,
   qmVoiceCoveragePercent: 80,
-  qmDigitalCoveragePercent: 70
+  qmDigitalCoveragePercent: 70,
+  humanAgentProduct: 'assistant'
 };
 
 const priorityGuidance = {
@@ -277,6 +278,11 @@ const outputs = {
   assistantDigitalSessions: document.getElementById("assistantDigitalSessions"),
   qmVoiceEvaluations: document.getElementById("qmVoiceEvaluations"),
   qmDigitalEvaluations: document.getElementById("qmDigitalEvaluations"),
+  assistantUnitsLabel: document.getElementById("assistantUnitsLabel"),
+  qmUnitsLabel: document.getElementById("qmUnitsLabel"),
+  qmMetricCard: document.getElementById("qmMetricCard"),
+  humanAgentProductNote: document.getElementById("humanAgentProductNote"),
+  qmSubSection: document.getElementById("qmSubSection"),
   resultWhyTitle: document.getElementById("resultWhyTitle"),
   resultWhyText: document.getElementById("resultWhyText"),
   voiceContainedBar: document.getElementById("voiceContainedBar"),
@@ -407,6 +413,17 @@ function setBar(element, amount, max) {
 }
 
 function formatPercent(val) { return `${Math.round(val * 100)}%`; }
+
+function updateProductVisibility() {
+  const product = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : 'assistant';
+  if (outputs.qmSubSection) outputs.qmSubSection.hidden = product === 'assistant';
+  const notes = {
+    assistant: 'Real-time transcription, AutoCSAT, sentiment analysis, summaries, and real-time agent assist. 1,500 min / 1,000 digital sessions per unit.',
+    qm: 'Evaluation form creation, AI evaluations & scoring, speech analytics, and coaching insights. 1,500 min / 1,000 digital sessions per unit.',
+    bundle: 'Superset of AI Assistant and AI QM. Blended agents: 1,500 min / 1,000 sessions per unit. Single workload: 2,500 min / 1,600 sessions per unit.'
+  };
+  if (outputs.humanAgentProductNote) outputs.humanAgentProductNote.textContent = notes[product] || notes.assistant;
+}
 
 function setList(list, items) {
   list.innerHTML = "";
@@ -610,7 +627,7 @@ function updateCalculator() {
   const agentVolumeVoice   = (hasVoice ? voiceRemainingCalls : (assistantCoversVoice ? positive("directAgentVoiceCalls") : 0)) + outboundRemainingContacts;
   const agentVolumeDigital = hasDigital ? digitalRemainingClients : (assistantCoversDigital ? positive("directAgentDigitalClients") : 0);
 
-  // ── AI Assistant ────────────────────────────────────────────
+  // ── AI Assistant & AI QM ────────────────────────────────────────────
   const assistantVoiceCoverageRate   = percent("assistantVoiceCoveragePercent");
   const assistantDigitalCoverageRate = percent("assistantDigitalCoveragePercent");
   const humanAhtMinutes              = positive("humanAhtMinutes");
@@ -620,15 +637,33 @@ function updateCalculator() {
   const assistantDigClients   = assistantCoversDigital ? agentVolumeDigital  * assistantDigitalCoverageRate : 0;
   const assistantDigSessions  = messageSessions(assistantDigClients, positive("assistantInboundMessages"));
 
-  const assistantUnits = Math.ceil((assistantVoiceMinutes / 1500) + (assistantDigSessions / 1000));
-
-  // ── AI QM ───────────────────────────────────────────────────
   const qmVoiceCoverageRate   = percent("qmVoiceCoveragePercent");
   const qmDigitalCoverageRate = percent("qmDigitalCoveragePercent");
-  const qmVoiceEvals   = assistantCoversVoice   ? agentVolumeVoice   * qmVoiceCoverageRate   : 0;
-  const qmDigitalEvals = assistantCoversDigital ? agentVolumeDigital  * qmDigitalCoverageRate : 0;
-  const qmTotalEvals   = qmVoiceEvals + qmDigitalEvals;
-  const qmUnits        = Math.ceil(qmTotalEvals / 500); // 1 unit = 500 evaluated interactions/month
+  const qmVoiceMinutes  = assistantCoversVoice   ? agentVolumeVoice * qmVoiceCoverageRate * humanAhtMinutes : 0;
+  const qmDigSessions   = messageSessions(assistantCoversDigital ? agentVolumeDigital * qmDigitalCoverageRate : 0, positive("assistantInboundMessages"));
+  const qmVoiceEvals    = assistantCoversVoice   ? agentVolumeVoice   * qmVoiceCoverageRate   : 0;
+  const qmDigitalEvals  = assistantCoversDigital ? agentVolumeDigital  * qmDigitalCoverageRate : 0;
+
+  const humanProduct = inputs.humanAgentProduct ? inputs.humanAgentProduct.value : 'assistant';
+  let assistantUnits = 0;
+  let qmUnits = 0;
+
+  if (humanProduct === 'assistant') {
+    // AI Assistant: 1,500 min / 1,000 digital sessions per unit
+    assistantUnits = Math.ceil((assistantVoiceMinutes / 1500) + (assistantDigSessions / 1000));
+  } else if (humanProduct === 'qm') {
+    // AI QM: 1,500 min / 1,000 digital sessions per unit
+    qmUnits = Math.ceil((qmVoiceMinutes / 1500) + (qmDigSessions / 1000));
+  } else {
+    // Bundle — both workloads (blended): 1,500 min / 1,000 sessions; single workload: 2,500 min / 1,600 sessions
+    if (agentType === 'blended') {
+      assistantUnits = Math.ceil((assistantVoiceMinutes / 1500) + (assistantDigSessions / 1000));
+    } else if (agentType === 'voice') {
+      assistantUnits = Math.ceil(assistantVoiceMinutes / 2500);
+    } else {
+      assistantUnits = Math.ceil(assistantDigSessions / 1600);
+    }
+  }
 
   // ── Total ───────────────────────────────────────────────────
   const totalUnits = agentTotalUnits + assistantUnits + qmUnits;
@@ -637,6 +672,12 @@ function updateCalculator() {
   outputs.industryRecommendation.textContent       = profile.recommendation;
   outputs.workforceModelRecommendation.textContent = getWorkforceGuidance().recommendation;
   updateAgentModeUi();
+  updateProductVisibility();
+
+  const productLabels = { assistant: 'Webex AI Assistant units', qm: 'Webex AI Assistant units', bundle: 'AI Assistant / AI QM Bundle units' };
+  if (outputs.assistantUnitsLabel) outputs.assistantUnitsLabel.textContent = productLabels[humanProduct] || productLabels.assistant;
+  if (outputs.qmMetricCard) outputs.qmMetricCard.hidden = humanProduct !== 'qm';
+
   updateVerticalAlignment(profile);
 
   outputs.totalUnits.textContent            = numberFormat.format(totalUnits);
@@ -675,8 +716,8 @@ function updateCalculator() {
   outputs.agentOutboundMinutes.textContent    = numberFormat.format(agentObMin);
   outputs.assistantVoiceMinutes.textContent   = numberFormat.format(assistantVoiceMinutes);
   outputs.assistantDigitalSessions.textContent = numberFormat.format(assistantDigSessions);
-  outputs.qmVoiceEvaluations.textContent      = numberFormat.format(qmVoiceEvals);
-  outputs.qmDigitalEvaluations.textContent    = numberFormat.format(qmDigitalEvals);
+  outputs.qmVoiceEvaluations.textContent      = numberFormat.format(qmVoiceMinutes);
+  outputs.qmDigitalEvaluations.textContent    = numberFormat.format(qmDigSessions);
 
   const maxVol = Math.max(voiceContainedCalls, digitalDeflectedClients, outboundHandledContacts, assistantVoiceCalls, assistantDigClients, 1);
   setBar(outputs.voiceContainedBar,   voiceContainedCalls,     maxVol);
