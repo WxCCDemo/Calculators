@@ -313,10 +313,16 @@ function updateCalculator() {
   const totalAgents = positive("totalAgents");
   const monthlyCallVolume = positive("monthlyCallVolume");
   const monthlyAgentCost = (totalAgents * positive("agentLoadedCost")) / 12;
-  const costPerContact = monthlyCallVolume ? monthlyAgentCost / monthlyCallVolume : 0;
   const savedAssumptions = getSavedAssumptions();
   const derived = derivedBenefitAssumptions(units, savedAssumptions);
   const realization = derived.realization;
+  const humanAhtMinutes = positive("talkTimeMinutes") / 60;
+  const acwMinutes = positive("acwMinutes") / 60;
+  const handleMinutes = humanAhtMinutes + acwMinutes;
+  const baselineHandleMinutes = (defaults.talkTimeMinutes + defaults.acwMinutes) / 60;
+  const poolCostPerContact = monthlyCallVolume ? monthlyAgentCost / monthlyCallVolume : 0;
+  const workloadAdjustedCostPerContact = poolCostPerContact * (handleMinutes / Math.max(1, baselineHandleMinutes));
+  const hourlyAgentCost = monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours"));
   const completionRate = savedEstimate && inputs.unitSource.value === "saved" && savedAssumptions.voiceCompletion !== null
     ? savedAssumptions.voiceCompletion / 100
     : percent("selfServiceContainment");
@@ -324,25 +330,21 @@ function updateCalculator() {
   const remainingAfterProactive = Math.max(0, monthlyCallVolume - proactiveAvoided);
   const containedCalls = remainingAfterProactive * completionRate;
   const contactsAvoided = (proactiveAvoided + containedCalls) * realization;
-  const deflectionSavings = contactsAvoided * costPerContact;
+  const deflectionSavings = contactsAvoided * workloadAdjustedCostPerContact;
 
   const humanHandledContacts = savedEstimate && inputs.unitSource.value === "saved" && savedAssumptions.humanHandledContacts
     ? savedAssumptions.humanHandledContacts
     : Math.max(0, remainingAfterProactive - containedCalls);
   const assistedContacts = humanHandledContacts * percent("assistantCoverage");
-  const humanAhtMinutes = positive("talkTimeMinutes") / 60;
-  const acwMinutes = positive("acwMinutes") / 60;
-  const handleMinutes = humanAhtMinutes + acwMinutes;
   const ahtMinutesSaved = assistedContacts * humanAhtMinutes * derived.ahtReduction * realization;
   const acwMinutesSaved = assistedContacts * acwMinutes * derived.acwReduction * realization;
   const assistedMinutesSaved = ahtMinutesSaved + acwMinutesSaved;
   const fcrContactsAvoided = monthlyCallVolume * derived.fcrImprovement * realization;
-  const fcrSavings = fcrContactsAvoided * costPerContact;
+  const fcrSavings = fcrContactsAvoided * workloadAdjustedCostPerContact;
   const baselineAbandonRate = 0.05;
   const baselineAbandonedContacts = monthlyCallVolume * baselineAbandonRate;
   const abandonedCallsRecovered = baselineAbandonedContacts * derived.abandonReduction * realization;
-  const abandonedSavings = abandonedCallsRecovered * costPerContact * 0.5;
-  const hourlyAgentCost = monthlyAgentCost / Math.max(1, totalAgents * positive("agentMonthlyHours"));
+  const abandonedSavings = abandonedCallsRecovered * workloadAdjustedCostPerContact * 0.5;
   const ahtSavings = (assistedMinutesSaved / 60) * hourlyAgentCost;
 
   const workforceSavings = 0;
@@ -394,12 +396,13 @@ function updateCalculator() {
   outputs.derivedAbandonReduction.textContent = `${numberFormat.format(derived.abandonReduction * 100)}%`;
   outputs.derivedRealizationFactor.textContent = `${numberFormat.format(derived.realization * 100)}%`;
   outputs.benefitLogicText.textContent =
-    `Logic: AI Assistant savings use human-handled contacts x ((AHT minutes x AHT reduction) + (ACW minutes x ACW reduction)); AI QM adds FCR improvement through scoring, sentiment, coaching, and quality feedback; AI Agent completion reduces contacts reaching agents. Abandoned-call recovery uses a ${numberFormat.format(baselineAbandonRate * 100)}% baseline abandonment assumption. First-year ROI subtracts one-time professional services. Repurposed agents are capacity released by avoided contacts and shorter assisted interactions, not an assumed headcount reduction.`;
+    `Logic: contact-based benefits use a workload-adjusted contact value: loaded agent cost per contact x ((AHT + ACW) / ${numberFormat.format(baselineHandleMinutes)} default handle minutes). AI Assistant savings use human-handled contacts x ((AHT minutes x AHT reduction) + (ACW minutes x ACW reduction)); AI QM adds FCR improvement through scoring, sentiment, coaching, and quality feedback; AI Agent completion reduces contacts reaching agents. Abandoned-call recovery uses a ${numberFormat.format(baselineAbandonRate * 100)}% baseline abandonment assumption. First-year ROI subtracts one-time professional services. Repurposed agents are capacity released by avoided contacts and shorter assisted interactions, not an assumed headcount reduction.`;
 
   outputs.summaryTitle.textContent = "ROI model summary";
   outputs.summaryText.textContent =
     `This model uses ${numberFormat.format(units.agent)} Webex AI Agent Unit(s), ${numberFormat.format(units.assistant)} Webex AI Assistant Unit(s), and ${numberFormat.format(units.qm)} Webex AI QM Unit(s). The Resource Calculator carries over ${numberFormat.format(savedAssumptions.scriptedUnits)} scripted and ${numberFormat.format(savedAssumptions.autonomousUnits)} autonomous AI Agent Unit(s), with ${numberFormat.format(completionRate * 100)}% voice completion by AI Agent and about ${numberFormat.format(humanHandledContacts)} contacts still reaching human agents. Benefits are modeled from higher FCR, reduced human AHT, lower ACW effort, lower abandoned-call risk, and fewer contacts reaching agents. The model shows ${numberFormat.format(humanAgentsRequired)} human agents still required and ${numberFormat.format(humanAgentsRepurposed)} agents of equivalent capacity available to repurpose, not an assumed headcount reduction. The current assumptions produce ${money(grossMonthlyBenefit)} in gross monthly benefit, ${money(monthlyLicenseCost)} in monthly license cost, ${money(netMonthlyImpact)} net monthly impact, and ${money(firstYearNetBenefit)} first-year net benefit after one-time professional services. Payback shows “No payback” when net monthly impact is negative.`;
   setList(outputs.valueLeverList, [
+    `Contact-based benefits use a workload-adjusted value of about ${money(workloadAdjustedCostPerContact)} per contact.`,
     `FCR improvement reduces repeat demand by about ${numberFormat.format(fcrContactsAvoided)} contacts per month.`,
     `AHT and ACW improvements release about ${numberFormat.format(assistedMinutesSaved / 60)} agent hours per month across ${numberFormat.format(assistedContacts)} assisted human-handled contacts.`,
     `Abandoned-call reduction recovers about ${numberFormat.format(abandonedCallsRecovered)} contacts per month in this model.`,
