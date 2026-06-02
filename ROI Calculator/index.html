@@ -56,6 +56,7 @@
           </div>
           <div class="calc-sub-group">
             <p class="sub-group-label">Metered consumption from AI Resource Calculator</p>
+            <p class="sub-group-desc">Shown as an audit trail for Step 1 sizing. ROI pricing uses product unit quantities and monthly unit rates unless usage-based pricing is entered manually.</p>
             <div class="calc-group-body resource-grid metering-grid compact">
               <article>
                 <span>AI Agent voice seconds</span>
@@ -130,7 +131,7 @@
                 <option value="manual">Manual / custom</option>
                 <option value="au">Australia</option>
                 <option value="nz">New Zealand</option>
-                <option value="sg">Singapore</option>
+                <option value="sg" selected>Singapore</option>
                 <option value="hk">Hong Kong</option>
                 <option value="in">India</option>
                 <option value="my">Malaysia</option>
@@ -139,7 +140,7 @@
                 <option value="vn">Vietnam</option>
                 <option value="kr">South Korea</option>
               </select>
-              <small>Sets a realistic annual loaded cost per agent in USD for ROI modelling.</small>
+              <small>Sets a realistic annual loaded cost per agent in USD equivalent for ROI modelling.</small>
             </label>
             <label>
               <span>Number of human agents</span>
@@ -150,12 +151,12 @@
               <small>Use productive FTEs supporting the selected queues.</small>
             </label>
             <label>
-              <span>Annual loaded cost per agent</span>
+              <span>Annual loaded cost per agent (USD equivalent)</span>
               <div class="dual-control">
-                <input id="agentLoadedCostSlider" type="range" min="0" max="250000" step="500" value="36000" data-sync-target="agentLoadedCost" />
-                <div class="with-unit value-money"><span>$</span><input id="agentLoadedCost" type="number" min="0" step="1000" value="36000" data-sync-target="agentLoadedCostSlider" /></div>
+                <input id="agentLoadedCostSlider" type="range" min="0" max="250000" step="500" value="42000" data-sync-target="agentLoadedCost" />
+                <div class="with-unit value-money"><span>USD</span><input id="agentLoadedCost" type="number" min="0" step="1000" value="42000" data-sync-target="agentLoadedCostSlider" /></div>
               </div>
-              <small>Annual fully loaded cost per agent in USD: salary, benefits, taxes, occupancy, tools, and management burden.</small>
+              <small>Annual fully loaded cost per agent converted to USD equivalent: salary, benefits, taxes, occupancy, tools, and management burden.</small>
             </label>
           </div>
         </div>
@@ -181,6 +182,14 @@
                 <div class="with-unit value-small"><input id="talkTimeMinutes" type="number" min="0" step="5" value="360" data-sync-target="talkTimeMinutesSlider" /><span>sec</span></div>
               </div>
               <small>Average human-agent handle time in seconds for calls that still need an agent.</small>
+            </label>
+            <label>
+              <span>Human agent ACW</span>
+              <div class="dual-control">
+                <input id="acwMinutesSlider" type="range" min="0" max="1800" step="5" value="60" data-sync-target="acwMinutes" />
+                <div class="with-unit value-small"><input id="acwMinutes" type="number" min="0" step="5" value="60" data-sync-target="acwMinutesSlider" /><span>sec</span></div>
+              </div>
+              <small>Average after-call work per human-handled call. Total human workload uses calls x (AHT + ACW).</small>
             </label>
           </div>
         </div>
@@ -232,34 +241,34 @@
               <small>Switch between visible retail rates and planning discount assumptions.</small>
             </label>
             <label>
-              <span>AI Agent unit rate</span>
+              <span>AI Agent unit rate (USD/month)</span>
               <div class="dual-control">
                 <input id="agentUnitRateSlider" type="range" min="0" max="500" step="5" value="100" data-sync-target="agentUnitRate" />
-                <div class="with-unit value-money"><span>$</span><input id="agentUnitRate" type="number" min="0" step="5" value="100" data-sync-target="agentUnitRateSlider" /></div>
+                <div class="with-unit value-money"><span>USD</span><input id="agentUnitRate" type="number" min="0" step="5" value="100" data-sync-target="agentUnitRateSlider" /></div>
               </div>
-              <small>Monthly rate per AI Agent unit.</small>
+              <small>Monthly USD equivalent rate per AI Agent unit.</small>
             </label>
             <label>
-              <span>AI Assistant unit rate</span>
+              <span>AI Assistant unit rate (USD/month)</span>
               <div class="dual-control">
                 <input id="assistantUnitRateSlider" type="range" min="0" max="300" step="5" value="30" data-sync-target="assistantUnitRate" />
-                <div class="with-unit value-money"><span>$</span><input id="assistantUnitRate" type="number" min="0" step="5" value="30" data-sync-target="assistantUnitRateSlider" /></div>
+                <div class="with-unit value-money"><span>USD</span><input id="assistantUnitRate" type="number" min="0" step="5" value="30" data-sync-target="assistantUnitRateSlider" /></div>
               </div>
-              <small>Monthly rate per AI Assistant unit.</small>
+              <small>Monthly USD equivalent rate per AI Assistant unit.</small>
             </label>
             <label>
-              <span>AI QM unit rate</span>
+              <span>AI QM unit rate (USD/month)</span>
               <div class="dual-control">
                 <input id="qmUnitRateSlider" type="range" min="0" max="300" step="5" value="30" data-sync-target="qmUnitRate" />
-                <div class="with-unit value-money"><span>$</span><input id="qmUnitRate" type="number" min="0" step="5" value="30" data-sync-target="qmUnitRateSlider" /></div>
+                <div class="with-unit value-money"><span>USD</span><input id="qmUnitRate" type="number" min="0" step="5" value="30" data-sync-target="qmUnitRateSlider" /></div>
               </div>
-              <small>Monthly rate per AI QM unit when included in scope.</small>
+              <small>Monthly USD equivalent rate per AI QM unit when included in scope.</small>
             </label>
             <label>
-              <span>One-time professional services</span>
+              <span>One-time professional services (USD equivalent)</span>
               <div class="dual-control">
                 <input id="professionalServicesSlider" type="range" min="0" max="2000000" step="10000" value="300000" data-sync-target="professionalServices" />
-                <div class="with-unit value-money wide"><span>$</span><input id="professionalServices" type="number" min="0" step="10000" value="300000" data-sync-target="professionalServicesSlider" /></div>
+                <div class="with-unit value-money wide"><span>USD</span><input id="professionalServices" type="number" min="0" step="10000" value="300000" data-sync-target="professionalServicesSlider" /></div>
               </div>
               <small>Development, integration, data readiness, prompt tuning, testing, and launch support.</small>
             </label>
@@ -330,11 +339,11 @@
           </article>
           <article class="metric">
             <span>Net monthly impact</span>
-            <strong id="netMonthlyImpact">$0</strong>
+            <strong id="netMonthlyImpact">USD 0</strong>
           </article>
           <article class="metric">
             <span>Annual net benefit</span>
-            <strong id="annualNetBenefit">$0</strong>
+            <strong id="annualNetBenefit">USD 0</strong>
           </article>
         </div>
 
@@ -342,21 +351,21 @@
           <article class="panel result-card">
             <div class="panel-heading"><p class="eyebrow">Savings</p><h2>Monthly Benefit</h2></div>
             <dl>
-              <div><dt>Deflection and containment</dt><dd id="monthlyDeflectionSavings">$0</dd></div>
-              <div><dt>AHT and ACW reduction</dt><dd id="monthlyAhtSavings">$0</dd></div>
-              <div><dt>FCR improvement</dt><dd id="monthlyFcrSavings">$0</dd></div>
-              <div><dt>Abandoned-call reduction</dt><dd id="monthlyAbandonSavings">$0</dd></div>
-              <div><dt>Total gross benefit</dt><dd id="grossMonthlyBenefit">$0</dd></div>
+              <div><dt>Deflection and containment</dt><dd id="monthlyDeflectionSavings">USD 0</dd></div>
+              <div><dt>AHT and ACW reduction</dt><dd id="monthlyAhtSavings">USD 0</dd></div>
+              <div><dt>FCR improvement</dt><dd id="monthlyFcrSavings">USD 0</dd></div>
+              <div><dt>Abandoned-call reduction</dt><dd id="monthlyAbandonSavings">USD 0</dd></div>
+              <div><dt>Total gross benefit</dt><dd id="grossMonthlyBenefit">USD 0</dd></div>
             </dl>
           </article>
 
           <article class="panel result-card">
             <div class="panel-heading"><p class="eyebrow">Investment</p><h2>Monthly Cost</h2></div>
             <dl>
-              <div><dt>AI Agent licensing</dt><dd id="agentLicenseCost">$0</dd></div>
-              <div><dt>AI Assistant licensing</dt><dd id="assistantLicenseCost">$0</dd></div>
-              <div><dt>AI QM licensing</dt><dd id="qmLicenseCost">$0</dd></div>
-              <div><dt>Total monthly license</dt><dd id="monthlyLicenseCost">$0</dd></div>
+              <div><dt>AI Agent licensing</dt><dd id="agentLicenseCost">USD 0</dd></div>
+              <div><dt>AI Assistant licensing</dt><dd id="assistantLicenseCost">USD 0</dd></div>
+              <div><dt>AI QM licensing</dt><dd id="qmLicenseCost">USD 0</dd></div>
+              <div><dt>Total monthly license</dt><dd id="monthlyLicenseCost">USD 0</dd></div>
             </dl>
           </article>
 

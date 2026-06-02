@@ -434,7 +434,7 @@ function updateProductVisibility() {
       voiceHelp: "% of human-escalated voice calls covered by the bundle. Use 100% to match the Excel bundle row.",
       digitalLabel: "Human digital interactions covered by bundle",
       digitalHelp: "% of human-escalated digital chats or messages covered by the bundle.",
-      qmDesc: "Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM. Voice formula: human-agent calls x coverage % x human AHT minutes, then divide by 1,500 minutes per Unit.",
+      qmDesc: "Bundled mode uses the same human-agent interaction base for AI Assistant and AI QM. Voice formula: human-agent calls x coverage % x human AHT seconds, converted to minutes, then divide by 1,500 minutes per Unit.",
       qmNote: "<strong>Bundled sizing:</strong> AI Assistant and AI QM show the same unit quantity. AI QM covers auto-scoring, sentiment analysis, compliance checking, and performance coaching for those agent interactions."
     },
     assistant: {
@@ -453,7 +453,7 @@ function updateProductVisibility() {
       digitalLabel: "Human digital interactions covered by AI QM",
       digitalHelp: "% of human-escalated digital chats or messages to be scored or evaluated by AI QM.",
       qmDesc: "AI QM only mode sizes Quality Management from the selected human-agent interaction coverage. AI Assistant is not included.",
-      qmNote: "<strong>AI QM sizing:</strong> Uses the selected coverage, human-agent AHT, and digital session assumptions to calculate AI QM quantity."
+      qmNote: "<strong>AI QM sizing:</strong> Uses the selected coverage, human-agent AHT seconds converted to minutes, and digital session assumptions to calculate AI QM quantity."
     }
   }[product];
   if (outputs.humanAgentProductNote) outputs.humanAgentProductNote.textContent = copy.note;

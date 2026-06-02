@@ -288,7 +288,7 @@
                   <input id="humanAhtMinutesSlider" type="range" min="0" max="1800" step="5" value="420" data-sync-target="humanAhtMinutes" />
                   <div class="with-unit value-small"><input id="humanAhtMinutes" type="number" min="0" step="5" value="420" data-sync-target="humanAhtMinutesSlider" /><span>sec</span></div>
                 </div>
-                <small>Human-agent AHT in seconds for calls that still go to agents. Dennis sheet uses 270 sec.</small>
+                <small>Human-agent AHT in seconds for calls that still go to agents. Defaults auto-align with the selected industry vertical.</small>
               </label>
             </div>
 
@@ -449,7 +449,7 @@
             <div data-assistant-channel="voice"><dt>AI QM voice minutes</dt><dd id="qmVoiceEvaluations">0</dd></div>
             <div data-assistant-channel="digital"><dt>AI QM digital sessions</dt><dd id="qmDigitalEvaluations">0</dd></div>
           </dl>
-          <p class="formula">Voice is metered in minutes. AI Agent scripted voice uses 1 Unit = 1,600 Minutes. AI Agent autonomous voice uses 1 Unit = 250 Minutes. AI Assistant and AI QM each use 1 Unit = 1,500 Minutes, or 1,000 digital sessions. All Units are rounded up.</p>
+          <p class="formula">Voice is metered in minutes. AI Agent scripted voice units = scripted voice minutes / 1,600; autonomous voice units = autonomous voice minutes / 250; scripted digital units = scripted sessions / 4,800; autonomous digital units = autonomous sessions / 200. AI Assistant and AI QM units = covered human-agent voice minutes / 1,500 plus covered digital sessions / 1,000. Human agent count is carried into ROI capacity planning, but unit sizing is driven by interaction, minute, and session consumption. All Units are rounded up.</p>
         </article>
 
         <!-- Next step CTA -->
